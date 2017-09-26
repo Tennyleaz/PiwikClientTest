@@ -62,7 +62,7 @@
                     <Button Name="btnImageView" Content="圖片模式" Margin="10,270,0,0" Click="btnImageView_Click"/>
                     <Button Name="btnRecovery" Content="資料庫還原" Margin="10,300,0,0" Click="btnRecovery_Click"/>
                     <Button Name="btnPrint" Content="列印" Margin="110,0,0,0" Click="btnPrint_Click"/>
-                    <Button Name="btnEmail" Content="Email" Margin="110,30,0,0" Click="btnEmail_Click"/>
+                    <Button Name="btnEmail" Content="寄Email" Margin="110,30,0,0" Click="btnEmail_Click"/>
                     <Button Name="btnWebsite" Content="顯示網頁" Margin="110,60,0,0" Click="btnWebsite_Click"/>
                     <Button Name="btnEditCard" Content="編輯名片" Margin="110,90,0,0" Click="btnEditCard_Click"/>
                     <Button Name="btnFindDuplicate" Content="尋找重複" Margin="110,120,0,0" Click="btnFindDuplicate_Click"/>
@@ -86,36 +86,36 @@
             
             <TabItem Header="匯入" >
                 <Grid>
-                    <Button Name="btnDbankImport" Content="華為網盤匯入" Margin="10,0,0,0"/>
-                    <Button Name="btnOutlookImport" Content="Outlook匯入" Margin="10,30,0,0"/>
-                    <Button Name="btnActImport" Content="Act匯入" Margin="10,60,0,0"/>
-                    <Button Name="btnLotusImport" Content="LotusNotes匯入" Margin="10,90,0,0"/>
-                    <Button Name="btnSalesforceImport" Content="Salesforce匯入" Margin="10,120,0,0"/>
-                    <Button Name="btnWC8Import" Content="WC8 DB匯入" Margin="10,150,0,0"/>
-                    <Button Name="btnWCXFImport" Content="WCXF匯入" Margin="10,180,0,0"/>
-                    <Button Name="btnCSVImport" Content="CSV匯入" Margin="10,210,0,0"/>
-                    <Button Name="btnVCFImport" Content="VCF匯入" Margin="10,240,0,0"/>
-                    <Button Name="btnJpegImport" Content="圖片匯入" Margin="10,270,0,0"/>
-                    <Button Name="btnDrpoboxImport" Content="Dropbox匯入" Margin="10,300,0,0"/>
-                    <Button Name="btnWCFImport" Content="WCF匯入" Margin="10,330,0,0"/>
+                    <Button Name="btnDbankImport" Content="華為網盤匯入" Margin="10,0,0,0" Click="btnDbankImport_Click"/>
+                    <Button Name="btnOutlookImport" Content="Outlook匯入" Margin="10,30,0,0" Click="btnOutlookImport_Click"/>
+                    <Button Name="btnActImport" Content="Act匯入" Margin="10,60,0,0" Click="btnActImport_Click"/>
+                    <Button Name="btnLotusImport" Content="LotusNotes匯入" Margin="10,90,0,0" Click="btnLotusImport_Click"/>
+                    <Button Name="btnSalesforceImport" Content="Salesforce匯入" Margin="10,120,0,0" Click="btnSalesforceImport_Click"/>
+                    <Button Name="btnWC8Import" Content="WC8 DB匯入" Margin="10,150,0,0" Click="btnWC8Import_Click"/>
+                    <Button Name="btnWCXFImport" Content="WCXF匯入" Margin="10,180,0,0" Click="btnWCXFImport_Click"/>
+                    <Button Name="btnCSVImport" Content="CSV匯入" Margin="10,210,0,0" Click="btnCSVImport_Click"/>
+                    <Button Name="btnVCFImport" Content="VCF匯入" Margin="10,240,0,0" Click="btnVCFImport_Click"/>
+                    <Button Name="btnJpegImport" Content="圖片匯入" Margin="10,270,0,0" Click="btnJpegImport_Click"/>
+                    <Button Name="btnDrpoboxImport" Content="Dropbox匯入" Margin="10,300,0,0" Click="btnDrpoboxImport_Click"/>
+                    <Button Name="btnWCFImport" Content="WCF匯入" Margin="10,330,0,0" Click="btnWCFImport_Click"/>
                 </Grid>
             </TabItem>
             
             <TabItem Header="匯出" >
                 <Grid>
-                    <Button Name="btnDBankExport" Content="華為網盤匯出" Margin="10,0,0,0"/>
-                    <Button Name="btnOutlookExport" Content="Outlook匯出" Margin="10,30,0,0"/>
-                    <Button Name="btnACTExport" Content="ACT匯出" Margin="10,60,0,0"/>
-                    <Button Name="btnLotusExport" Content="Lotus匯出" Margin="10,90,0,0"/>
-                    <Button Name="btnSalesforceExport" Content="Salesforce匯出" Margin="10,120,0,0"/>
-                    <Button Name="btnLeadExport" Content="Salesforce商機匯出" Margin="10,150,0,0"/>
-                    <Button Name="btnWCXFExport" Content="WCXF匯出" Margin="10,180,0,0"/>
-                    <Button Name="btnExcelExport" Content="Excel匯出" Margin="10,210,0,0"/>
-                    <Button Name="btnCSVExport" Content="CSV匯出" Margin="10,240,0,0"/>
-                    <Button Name="btnVCFExport" Content="VCF匯出" Margin="10,270,0,0"/>
-                    <Button Name="btnJpegExport" Content="圖片匯出" Margin="10,300,0,0"/>
-                    <Button Name="btnDropboxExport" Content="Dropbox匯出" Margin="110,0,0,0"/>
-                    <Button Name="btnTxtExport" Content="Txt匯出" Margin="110,30,0,0"/>
+                    <Button Name="btnDBankExport" Content="華為網盤匯出" Margin="10,0,0,0" Click="btnDBankExport_Click"/>
+                    <Button Name="btnOutlookExport" Content="Outlook匯出" Margin="10,30,0,0" Click="btnOutlookExport_Click"/>
+                    <Button Name="btnACTExport" Content="ACT匯出" Margin="10,60,0,0" Click="btnACTExport_Click"/>
+                    <Button Name="btnLotusExport" Content="Lotus匯出" Margin="10,90,0,0" Click="btnLotusExport_Click"/>
+                    <Button Name="btnSalesforceExport" Content="Salesforce匯出" Margin="10,120,0,0" Click="btnSalesforceExport_Click"/>
+                    <Button Name="btnLeadExport" Content="Salesforce商機匯出" Margin="10,150,0,0" Click="btnLeadExport_Click"/>
+                    <Button Name="btnWCXFExport" Content="WCXF匯出" Margin="10,180,0,0" Click="btnWCXFExport_Click"/>
+                    <Button Name="btnExcelExport" Content="Excel匯出" Margin="10,210,0,0" Click="btnExcelExport_Click"/>
+                    <Button Name="btnCSVExport" Content="CSV匯出" Margin="10,240,0,0" Click="btnCSVExport_Click"/>
+                    <Button Name="btnVCFExport" Content="VCF匯出" Margin="10,270,0,0" Click="btnVCFExport_Click"/>
+                    <Button Name="btnJpegExport" Content="圖片匯出" Margin="10,300,0,0" Click="btnJpegExport_Click"/>
+                    <Button Name="btnDropboxExport" Content="Dropbox匯出" Margin="110,0,0,0" Click="btnDropboxExport_Click"/>
+                    <Button Name="btnTxtExport" Content="Txt匯出" Margin="110,30,0,0" Click="btnTxtExport_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>

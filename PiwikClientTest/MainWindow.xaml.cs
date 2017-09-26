@@ -24,7 +24,7 @@ namespace PiwikClientTest
     public partial class MainWindow : Window
     {
         private string UA;// = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
-        private static readonly string PiwikBaseUrl = "http://10.10.12.73";
+        private static readonly string PiwikBaseUrl = "http://13.94.36.109";
         private static int SiteId = 2;  //Piwik控制台裡面設定的site id號碼，對應不同產品
 
         private BackgroundWorker worker;
@@ -67,7 +67,7 @@ namespace PiwikClientTest
             DBankImport,
             OutlookImport,
             ActImport,
-            LotusImport,
+            LotusNoteImport,
             SaleforceImport,
             WcxfImport,
             CsvImport,
@@ -79,7 +79,7 @@ namespace PiwikClientTest
             DBankExport,
             OutlookExport,
             ActExport,
-            LotusExport,
+            LotusNotesExport,
             SaleforceExport,
             SaleforceLeadExport,
             WcxfExport,
@@ -150,7 +150,6 @@ namespace PiwikClientTest
             if (cbAppName.SelectedIndex == 0)  //WCT
             {
                 btnNasSync.IsEnabled = true;
-                btnOutlookSync.IsEnabled = true;
                 btnGmailSync.IsEnabled = false;
                 btnActSync.IsEnabled = false;
                 btnLotusNoteSync.IsEnabled = false;
@@ -165,7 +164,6 @@ namespace PiwikClientTest
             else  //WC8
             {
                 btnNasSync.IsEnabled = false;
-                btnOutlookSync.IsEnabled = false;
                 btnGmailSync.IsEnabled = true;
                 btnActSync.IsEnabled = true;
                 btnLotusNoteSync.IsEnabled = true;
@@ -210,9 +208,9 @@ namespace PiwikClientTest
             //piwikTracker.SetUrl("http://piwik-1.5/supernova");
             //piwikTracker.SetUrlReferrer("http://supernovadirectory.org");
             piwikTracker.SetUrl(url);
-            piwikTracker.SetCustomTrackingParameter("dimension2", versionNumber);
+            //piwikTracker.SetCustomTrackingParameter("dimension2", versionNumber);
             
-            piwikTracker.SetBrowserLanguage(localeName);
+            //piwikTracker.SetBrowserLanguage(localeName);
 
             try
             {
@@ -235,6 +233,7 @@ namespace PiwikClientTest
             uID = tbUserID.Text;
             titleString = tbTitle.Text;
             versionNumber = tbVersionNumber.Text;
+            lbResult.Content = "";
 
             string url = "http://";
             if (cbAppName.SelectedIndex == 0) //WCT
@@ -290,7 +289,7 @@ namespace PiwikClientTest
                 case RecordType.DBankImport:
                 case RecordType.OutlookImport:
                 case RecordType.ActImport:
-                case RecordType.LotusImport:
+                case RecordType.LotusNoteImport:
                 case RecordType.SaleforceImport:
                 case RecordType.WcxfImport:
                 case RecordType.CsvImport:
@@ -304,7 +303,7 @@ namespace PiwikClientTest
                 case RecordType.DBankExport:
                 case RecordType.OutlookExport:
                 case RecordType.ActExport:
-                case RecordType.LotusExport:
+                case RecordType.LotusNotesExport:
                 case RecordType.SaleforceExport:
                 case RecordType.SaleforceLeadExport:
                 case RecordType.WcxfExport:
@@ -480,6 +479,161 @@ namespace PiwikClientTest
         private void btnSalesforceSync_Click(object sender, RoutedEventArgs e)
         {
             string url = GenerateURL(RecordType.SalesforceSync);
+            worker.RunWorkerAsync(url);
+        }
+        #endregion
+
+        #region Import Buttons
+        private void btnDbankImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.DBankImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnOutlookImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.OutlookImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnActImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.ActImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnLotusImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.LotusNoteImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnSalesforceImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.SaleforceImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnWC8Import_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.WorldCardv8DBImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnWCXFImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.WcxfImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnCSVImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.CsvImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnVCFImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.VcardImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnJpegImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.JpegImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnDrpoboxImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.DropboxImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnWCFImport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.WcxfImport);
+            worker.RunWorkerAsync(url);
+        }
+
+        #endregion
+
+        #region Export Buttons
+        private void btnDBankExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.DBankExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnOutlookExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.OutlookExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnACTExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.ActExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnLotusExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.LotusNotesExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnSalesforceExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.SaleforceExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnLeadExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.SaleforceLeadExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnWCXFExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.WcxfExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnExcelExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.ExcelExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnCSVExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.CsvExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnVCFExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.VcardExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnJpegExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.JpegExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnDropboxExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.DropboxExport);
+            worker.RunWorkerAsync(url);
+        }
+
+        private void btnTxtExport_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.TxtExport);
             worker.RunWorkerAsync(url);
         }
         #endregion
