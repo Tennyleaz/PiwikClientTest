@@ -1,0 +1,123 @@
+﻿<Window x:Class="PiwikClientTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PiwikClientTest"
+        mc:Ignorable="d"
+        Title="Piwik Test" Height="550" Width="500" Loaded="Window_Loaded">
+    
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="MinWidth" Value="90" />
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="100" />
+            <RowDefinition />            
+        </Grid.RowDefinitions>
+
+        <Grid Name="versionSelectGrid" Grid.Row="0">
+            <Label>名稱：</Label>
+            <ComboBox Name="cbAppName" Width="150" Height="20" Margin="70,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="cbAppName_SelectionChanged">
+                <ComboBoxItem Name="cbi1">WorldCard Team</ComboBoxItem>
+                <ComboBoxItem Name="cbi2">WorldCard</ComboBoxItem>
+            </ComboBox>
+            
+            <Label Margin="0,22,0,0">號碼：</Label>
+            <TextBox Name="tbVersionNumber" Width="150" Height="20"  Margin="70,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>            
+            
+            <Label Margin="0,45,0,0">UID：</Label>
+            <TextBox Name="tbUserID" Width="150" Height="20"  Margin="70,48,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+            <Label Margin="0,68,0,0">自訂標題：</Label>
+            <TextBox Name="tbTitle" Width="150" Height="20"  Margin="70,72,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+            <Label Margin="250,0,0,0">OS:</Label>
+            <Label Name="lbOS" Margin="300,0,0,0">0</Label>
+
+            <Label Margin="250,25,0,0">Result:</Label>
+            <Label Name="lbResult" Margin="300,25,0,0">???</Label>
+
+            <ProgressBar Name="progressBar" Margin="250,72,0,0" Width="200" Height="20" IsIndeterminate="True" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden"/>
+        </Grid>
+        
+        <TabControl Name="tabs" Grid.Row="1">
+            <TabItem Header="一般">
+                <Grid VerticalAlignment="Top">
+                    <Button Name="btnUse" Content="啟動" Margin="10,0,0,0" Click="btnUse_Click"/>
+                    <Button Name="btnLinkedin" Content="LinkedIn" Margin="10,30,0,0" Click="btnLinkedin_Click"/>
+                    <Button Name="btnFacebook" Content="Facebook" Margin="10,60,0,0" Click="btnFacebook_Click"/>                    
+                    <Button Name="btnWeibo" Content="微博" Margin="10,90,0,0" Click="btnWeibo_Click"/>
+                    <Button Name="btnTwitter" Content="Twitter" Margin="10,120,0,0" Click="btnTwitter_Click"/>
+                    <Button Name="btnShowMap" Content="地址地圖" Margin="10,150,0,0" Click="btnShowMap_Click"/>
+                    <Button Name="btnRoute" Content="路徑規劃" Margin="10,180,0,0" Click="btnRoute_Click"/>
+                    <Button Name="btnSkype" Content="Skype" Margin="10,210,0,0" Click="btnSkype_Click"/>
+                    <Button Name="btnSkypeSMS" Content="Skype簡訊" Margin="10,240,0,0" Click="btnSkypeSMS_Click"/>
+                    <Button Name="btnImageView" Content="圖片模式" Margin="10,270,0,0" Click="btnImageView_Click"/>
+                    <Button Name="btnRecovery" Content="資料庫還原" Margin="10,300,0,0" Click="btnRecovery_Click"/>
+                    <Button Name="btnPrint" Content="列印" Margin="110,0,0,0" Click="btnPrint_Click"/>
+                    <Button Name="btnEmail" Content="Email" Margin="110,30,0,0" Click="btnEmail_Click"/>
+                    <Button Name="btnWebsite" Content="顯示網頁" Margin="110,60,0,0" Click="btnWebsite_Click"/>
+                    <Button Name="btnEditCard" Content="編輯名片" Margin="110,90,0,0" Click="btnEditCard_Click"/>
+                    <Button Name="btnFindDuplicate" Content="尋找重複" Margin="110,120,0,0" Click="btnFindDuplicate_Click"/>
+                    <Button Name="btnFindSameName" Content="尋找同名" Margin="110,150,0,0" Click="btnFindSameName_Click"/>
+                    <Button Name="btnSetCategory" Content="變更類別" Margin="110,180,0,0" Click="btnSetCategory_Click"/>
+                    <Button Name="btnAddCardCount" Content="新增卡片" Margin="110,210,0,0" Click="btnAddCardCount_Click"/>
+                    <Button Name="btnManual" Content="使用手冊" Margin="110,240,0,0" Click="btnManual_Click"/>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="同步" >
+                <Grid>
+                    <Button Name="btnGmailSync" Content="Gmail 同步" Margin="10,0,0,0" Click="btnGmailSync_Click"/>
+                    <Button Name="btnNasSync" Content="NAS 同步" Margin="10,30,0,0" Click="btnNasSync_Click"/>
+                    <Button Name="btnActSync" Content="ACT 同步" Margin="10,60,0,0" Click="btnActSync_Click"/>
+                    <Button Name="btnOutlookSync" Content="Outlook 同步" Margin="10,90,0,0" Click="btnOutlookSync_Click"/>
+                    <Button Name="btnLotusNoteSync" Content="LotusNote 同步" Margin="10,120,0,0" Click="btnLotusNoteSync_Click"/>
+                    <Button Name="btnSalesforceSync" Content="Salesforce 同步" Margin="10,150,0,0" Click="btnSalesforceSync_Click"/>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="匯入" >
+                <Grid>
+                    <Button Name="btnDbankImport" Content="華為網盤匯入" Margin="10,0,0,0"/>
+                    <Button Name="btnOutlookImport" Content="Outlook匯入" Margin="10,30,0,0"/>
+                    <Button Name="btnActImport" Content="Act匯入" Margin="10,60,0,0"/>
+                    <Button Name="btnLotusImport" Content="LotusNotes匯入" Margin="10,90,0,0"/>
+                    <Button Name="btnSalesforceImport" Content="Salesforce匯入" Margin="10,120,0,0"/>
+                    <Button Name="btnWC8Import" Content="WC8 DB匯入" Margin="10,150,0,0"/>
+                    <Button Name="btnWCXFImport" Content="WCXF匯入" Margin="10,180,0,0"/>
+                    <Button Name="btnCSVImport" Content="CSV匯入" Margin="10,210,0,0"/>
+                    <Button Name="btnVCFImport" Content="VCF匯入" Margin="10,240,0,0"/>
+                    <Button Name="btnJpegImport" Content="圖片匯入" Margin="10,270,0,0"/>
+                    <Button Name="btnDrpoboxImport" Content="Dropbox匯入" Margin="10,300,0,0"/>
+                    <Button Name="btnWCFImport" Content="WCF匯入" Margin="10,330,0,0"/>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="匯出" >
+                <Grid>
+                    <Button Name="btnDBankExport" Content="華為網盤匯出" Margin="10,0,0,0"/>
+                    <Button Name="btnOutlookExport" Content="Outlook匯出" Margin="10,30,0,0"/>
+                    <Button Name="btnACTExport" Content="ACT匯出" Margin="10,60,0,0"/>
+                    <Button Name="btnLotusExport" Content="Lotus匯出" Margin="10,90,0,0"/>
+                    <Button Name="btnSalesforceExport" Content="Salesforce匯出" Margin="10,120,0,0"/>
+                    <Button Name="btnLeadExport" Content="Salesforce商機匯出" Margin="10,150,0,0"/>
+                    <Button Name="btnWCXFExport" Content="WCXF匯出" Margin="10,180,0,0"/>
+                    <Button Name="btnExcelExport" Content="Excel匯出" Margin="10,210,0,0"/>
+                    <Button Name="btnCSVExport" Content="CSV匯出" Margin="10,240,0,0"/>
+                    <Button Name="btnVCFExport" Content="VCF匯出" Margin="10,270,0,0"/>
+                    <Button Name="btnJpegExport" Content="圖片匯出" Margin="10,300,0,0"/>
+                    <Button Name="btnDropboxExport" Content="Dropbox匯出" Margin="110,0,0,0"/>
+                    <Button Name="btnTxtExport" Content="Txt匯出" Margin="110,30,0,0"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
