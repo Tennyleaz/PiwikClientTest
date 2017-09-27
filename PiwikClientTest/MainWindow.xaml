@@ -70,6 +70,9 @@
                     <Button Name="btnSetCategory" Content="變更類別" Margin="110,180,0,0" Click="btnSetCategory_Click"/>
                     <Button Name="btnAddCardCount" Content="新增卡片" Margin="110,210,0,0" Click="btnAddCardCount_Click"/>
                     <Button Name="btnManual" Content="使用手冊" Margin="110,240,0,0" Click="btnManual_Click"/>
+                    <Label Content="關鍵字:" Margin="220,0,0,0"/>
+                    <TextBox Name="tbSearchKey" Height="20" Width="110" Margin="270,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Button Name="btnSearch" Content="搜尋" Margin="380,0,0,0" Click="btnSearch_Click"/>
                 </Grid>
             </TabItem>
             

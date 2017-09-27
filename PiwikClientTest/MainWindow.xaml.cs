@@ -34,6 +34,7 @@ namespace PiwikClientTest
         private string versionNumber;
         private string responceString;
         private string localeName;
+        private string searchKey;
 
         enum RecordType
         {
@@ -88,7 +89,8 @@ namespace PiwikClientTest
             VcardExport,
             JpegExport,
             DropboxExport,
-            TxtExport
+            TxtExport,
+            Search
         }
 
         public MainWindow()
@@ -133,6 +135,7 @@ namespace PiwikClientTest
                 lbResult.Content = responceString;
             progressBar.Visibility = Visibility.Hidden;
             tabs.IsEnabled = true;
+            tbSearchKey.Text = "";
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
@@ -142,6 +145,17 @@ namespace PiwikClientTest
             string url = obj as string;
             if (!string.IsNullOrEmpty(url))
                 RecordSimplePageViewWithCustomProperties(url);
+        }
+
+        private void Bkworker_DoWorkSearch(object sender, DoWorkEventArgs e)
+        {
+            object[] argumenrts = e.Argument as object[];
+            if (argumenrts.Length != 2)
+                return;
+            string url = argumenrts[0] as string;
+            string key = argumenrts[1] as string;
+            if (!string.IsNullOrEmpty(url))
+                RecordSimplePageViewWithCustomProperties(url, key);
         }
         #endregion
 
@@ -178,7 +192,7 @@ namespace PiwikClientTest
         }
 
         #region Prepare URL data
-        private void RecordSimplePageViewWithCustomProperties(string url)
+        private void RecordSimplePageViewWithCustomProperties(string url, string key = null)
         {
             workerException = null;
 
@@ -210,7 +224,13 @@ namespace PiwikClientTest
             piwikTracker.SetUrl(url);
             //piwikTracker.SetCustomTrackingParameter("dimension2", versionNumber);
             
-            //piwikTracker.SetBrowserLanguage(localeName);
+            piwikTracker.SetBrowserLanguage("en-us");
+            piwikTracker.SetGenerationTime(1000);
+
+            if (!string.IsNullOrEmpty(key))
+            {
+                piwikTracker.DoTrackSiteSearch(key);
+            }
 
             try
             {
@@ -239,13 +259,13 @@ namespace PiwikClientTest
             if (cbAppName.SelectedIndex == 0) //WCT
             {
                 url += "WorldCardTeam/";
-                if (string.IsNullOrWhiteSpace(versionNumber))
-                    versionNumber = "v1.1.0";
+                if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
+                    versionNumber = "v1.0.0";
             }
             else  //WC8
             {
                 url += "WorldCard8/";
-                if (string.IsNullOrWhiteSpace(versionNumber))
+                if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
                     versionNumber = "v8.5.6";
             }
 
@@ -270,6 +290,7 @@ namespace PiwikClientTest
                 case RecordType.FindTheSameName:
                 case RecordType.SetCategory:
                 case RecordType.AddCardCount:
+                case RecordType.Search:
                     url += "/General/" + recordType.ToString();
                     break;
                 case RecordType.Facebook:
@@ -442,6 +463,21 @@ namespace PiwikClientTest
         {
             string url = GenerateURL(RecordType.Manual);
             worker.RunWorkerAsync(url);
+        }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            string url = GenerateURL(RecordType.Search);
+            searchKey = tbSearchKey.Text;
+            if (string.IsNullOrEmpty(searchKey))
+                return;
+
+            object[] arguments = { url, searchKey };
+            BackgroundWorker bkworker = new BackgroundWorker();
+            bkworker.DoWork += Bkworker_DoWorkSearch;
+            bkworker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            bkworker.ProgressChanged += Worker_ProgressChanged;
+            bkworker.RunWorkerAsync(arguments);
         }
         #endregion
 
@@ -637,5 +673,6 @@ namespace PiwikClientTest
             worker.RunWorkerAsync(url);
         }
         #endregion
+
     }
 }
