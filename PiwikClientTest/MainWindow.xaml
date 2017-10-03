@@ -39,10 +39,15 @@
             <TextBox Name="tbTitle" Width="150" Height="20"  Margin="70,72,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
             <Label Margin="250,0,0,0">OS:</Label>
-            <Label Name="lbOS" Margin="300,0,0,0">0</Label>
+            <Label Name="lbOS" Margin="300,0,0,0">Win 0.0</Label>
 
-            <Label Margin="250,25,0,0">Result:</Label>
-            <Label Name="lbResult" Margin="300,25,0,0">???</Label>
+            <Label Margin="250,22,0,0">螢幕：</Label>
+            <TextBox Name="tbWidth" Width="60" Height="20"  Margin="300,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput"/>
+            <Label Margin="360,22,0,0">X</Label>
+            <TextBox Name="tbHeight" Width="60" Height="20"  Margin="380,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput"/>
+
+            <Label Margin="250,45,0,0">Result:</Label>
+            <Label Name="lbResult" Margin="300,45,0,0">???</Label>
 
             <ProgressBar Name="progressBar" Margin="250,72,0,0" Width="200" Height="20" IsIndeterminate="True" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden"/>
         </Grid>

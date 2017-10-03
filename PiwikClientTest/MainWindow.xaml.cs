@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,6 +36,7 @@ namespace PiwikClientTest
         private string responceString;
         private string localeName;
         private string searchKey;
+        private int width, height;
 
         enum RecordType
         {
@@ -103,11 +105,14 @@ namespace PiwikClientTest
         {
             int osMajor = Environment.OSVersion.Version.Major;
             int osMinor = Environment.OSVersion.Version.Minor;
-            UA = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64; en-US;)";
+            UA = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64;)";
             CultureInfo ci = CultureInfo.CurrentCulture;
             localeName = ci.Name;
             lbOS.Content = "Windows NT " + osMajor + "." + osMinor + ", " + localeName;
             cbAppName.SelectedIndex = 0;
+
+            tbWidth.Text = SystemParameters.PrimaryScreenWidth.ToString();
+            tbHeight.Text = SystemParameters.PrimaryScreenHeight.ToString();
             //Guid guid = new Guid();
             //tbUserID.Text = guid.ToString();
             worker = new BackgroundWorker();
@@ -174,6 +179,7 @@ namespace PiwikClientTest
                 btnDbankImport.IsEnabled = false;
                 btnLeadExport.IsEnabled = false;
                 SiteId = 1;
+                tbVersionNumber.Text = "v1.0.0";
             }
             else  //WC8
             {
@@ -188,7 +194,19 @@ namespace PiwikClientTest
                 btnDbankImport.IsEnabled = true;
                 btnLeadExport.IsEnabled = true;
                 SiteId = 2;
+                tbVersionNumber.Text = "v8.5.6";
             }
+        }
+
+        private void tbWidth_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = IsTextAllowed(e.Text);
+        }
+
+        private bool IsTextAllowed(string text)
+        {
+            Regex regex = new Regex("[^0-9]"); //regex that matches disallowed text
+            return regex.IsMatch(text);
         }
 
         #region Prepare URL data
@@ -199,7 +217,7 @@ namespace PiwikClientTest
             var piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
             piwikTracker.SetUserAgent(UA);
 
-            piwikTracker.SetResolution((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight);
+            piwikTracker.SetResolution(width, height);
 
             //piwikTracker.SetIp("218.161.53.45");
             if (!string.IsNullOrWhiteSpace(uID))
@@ -224,7 +242,7 @@ namespace PiwikClientTest
             piwikTracker.SetUrl(url);
             //piwikTracker.SetCustomTrackingParameter("dimension2", versionNumber);
             
-            piwikTracker.SetBrowserLanguage("en-us");
+            piwikTracker.SetBrowserLanguage("en-US");
             piwikTracker.SetGenerationTime(1000);
 
             if (!string.IsNullOrEmpty(key))
@@ -254,6 +272,9 @@ namespace PiwikClientTest
             titleString = tbTitle.Text;
             versionNumber = tbVersionNumber.Text;
             lbResult.Content = "";
+
+            int.TryParse(tbWidth.Text, out width);
+            int.TryParse(tbHeight.Text, out height);
 
             string url = "http://";
             if (cbAppName.SelectedIndex == 0) //WCT
@@ -673,6 +694,7 @@ namespace PiwikClientTest
             worker.RunWorkerAsync(url);
         }
         #endregion
+
 
     }
 }
