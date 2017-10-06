@@ -114,12 +114,22 @@ namespace Piwik.Tracker
         /// <param name="customHeight">複寫系統螢幕高度</param>
         public PPPiwikClient(int siteID, string appName, string version, string userID, int? customWidth = null, int? customHeight = null)
         {
+            #region 檢查用
+            if (string.IsNullOrEmpty(appName))
+                throw new ArgumentNullException(appName, "App name must be not null or empty.");
+            if (string.IsNullOrEmpty(userID))
+                throw new ArgumentNullException(userID, "User ID must be not null or empty.");
+            if (string.IsNullOrEmpty(version))
+                throw new ArgumentNullException(version, "Version must be not null or empty.");
+            #endregion
+
             int osMajor = Environment.OSVersion.Version.Major;
             int osMinor = Environment.OSVersion.Version.Minor;
             UA = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64)";
 
             width = customWidth.HasValue ? customWidth.Value : (int)SystemParameters.PrimaryScreenWidth;
             height = customHeight.HasValue ? customHeight.Value : (int)SystemParameters.PrimaryScreenHeight;
+
             applicationName = appName;
             versionNumber = version;
             uID = userID;
