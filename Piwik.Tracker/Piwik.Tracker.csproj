@@ -33,6 +33,7 @@
     <DocumentationFile>bin\Release\Piwik.Tracker.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -51,6 +52,7 @@
     <Compile Include="CustomVar.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="PiwikTracker.cs" />
+    <Compile Include="PPPiwikClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrackingResponse.cs" />
   </ItemGroup>

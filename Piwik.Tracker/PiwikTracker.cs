@@ -117,7 +117,7 @@ namespace Piwik.Tracker
 	    private const string DefaultCharsetParameterValues = "utf-8";
 
         /// <summary>
-        /// <see cref="http://developer.piwik.org/api-reference/tracking-javascript"/>
+        /// <see cref="Http://developer.piwik.org/api-reference/tracking-javascript"/>
         /// </summary>
         private const string FirstPartyCookiesPrefix = "_pk_";
 

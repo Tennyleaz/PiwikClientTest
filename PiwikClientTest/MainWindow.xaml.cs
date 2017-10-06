@@ -24,6 +24,9 @@ namespace PiwikClientTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// 桌上型電腦的品牌UA：
+        /// https://www.whatismybrowser.com/developers/guides/unknown-user-agent-fragments
+        /// 
         private string UA;// = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
         private static readonly string PiwikBaseUrl = "http://13.94.36.109";
         private static int SiteId = 2;  //Piwik控制台裡面設定的site id號碼，對應不同產品
@@ -38,7 +41,7 @@ namespace PiwikClientTest
         private string searchKey;
         private int width, height;
 
-        enum RecordType
+        /*enum PPPiwikClient.RecordType
         {
             Use,
             Use_Daily,
@@ -93,19 +96,19 @@ namespace PiwikClientTest
             DropboxExport,
             TxtExport,
             Search
-        }
+        }*/
 
         public MainWindow()
         {
             UA = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)";
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             int osMajor = Environment.OSVersion.Version.Major;
             int osMinor = Environment.OSVersion.Version.Minor;
-            UA = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64;)";
+            UA = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64)";
             CultureInfo ci = CultureInfo.CurrentCulture;
             localeName = ci.Name;
             lbOS.Content = "Windows NT " + osMajor + "." + osMinor + ", " + localeName;
@@ -113,8 +116,7 @@ namespace PiwikClientTest
 
             tbWidth.Text = SystemParameters.PrimaryScreenWidth.ToString();
             tbHeight.Text = SystemParameters.PrimaryScreenHeight.ToString();
-            //Guid guid = new Guid();
-            //tbUserID.Text = guid.ToString();
+
             worker = new BackgroundWorker();
             worker.WorkerSupportsCancellation = false;
             worker.WorkerReportsProgress = true;
@@ -264,9 +266,10 @@ namespace PiwikClientTest
             }
         }
 
-        private string GenerateURL(RecordType recordType)
+        private string GenerateURL(PPPiwikClient.RecordType recordType)
         {
             tabs.IsEnabled = false;
+            progressBar.Visibility = Visibility.Visible;
 
             uID = tbUserID.Text;
             titleString = tbTitle.Text;
@@ -294,67 +297,67 @@ namespace PiwikClientTest
 
             switch (recordType)
             {
-                case RecordType.Use:
-                case RecordType.Use_Daily:
-                case RecordType.Manual:                
-                case RecordType.ShowMap:
-                case RecordType.Route:
-                case RecordType.SkypeOut:
-                case RecordType.SkypeSMS:
-                case RecordType.ImageView:
-                case RecordType.Recovery:
-                case RecordType.Print:
-                case RecordType.SendMail:
-                case RecordType.OpenWebSite:
-                case RecordType.EditCard:
-                case RecordType.FindDuplicate:
-                case RecordType.FindTheSameName:
-                case RecordType.SetCategory:
-                case RecordType.AddCardCount:
-                case RecordType.Search:
+                case PPPiwikClient.RecordType.Use:
+                case PPPiwikClient.RecordType.Use_Daily:
+                case PPPiwikClient.RecordType.Manual:                
+                case PPPiwikClient.RecordType.ShowMap:
+                case PPPiwikClient.RecordType.Route:
+                case PPPiwikClient.RecordType.SkypeOut:
+                case PPPiwikClient.RecordType.SkypeSMS:
+                case PPPiwikClient.RecordType.ImageView:
+                case PPPiwikClient.RecordType.Recovery:
+                case PPPiwikClient.RecordType.Print:
+                case PPPiwikClient.RecordType.SendMail:
+                case PPPiwikClient.RecordType.OpenWebSite:
+                case PPPiwikClient.RecordType.EditCard:
+                case PPPiwikClient.RecordType.FindDuplicate:
+                case PPPiwikClient.RecordType.FindTheSameName:
+                case PPPiwikClient.RecordType.SetCategory:
+                case PPPiwikClient.RecordType.AddCardCount:
+                case PPPiwikClient.RecordType.Search:
                     url += "/General/" + recordType.ToString();
                     break;
-                case RecordType.Facebook:
-                case RecordType.LinkedIn:
-                case RecordType.SinaWeibo:
-                case RecordType.Twitter:
+                case PPPiwikClient.RecordType.Facebook:
+                case PPPiwikClient.RecordType.LinkedIn:
+                case PPPiwikClient.RecordType.SinaWeibo:
+                case PPPiwikClient.RecordType.Twitter:
                     url += "/SocialNetwork/" + recordType.ToString();
                     break;
-                case RecordType.GoogleSync:
-                case RecordType.NasSync:
-                case RecordType.ActSync:
-                case RecordType.OutlookSync:
-                case RecordType.LotusNoteSync:
-                case RecordType.SalesforceSync:
+                case PPPiwikClient.RecordType.GoogleSync:
+                case PPPiwikClient.RecordType.NasSync:
+                case PPPiwikClient.RecordType.ActSync:
+                case PPPiwikClient.RecordType.OutlookSync:
+                case PPPiwikClient.RecordType.LotusNoteSync:
+                case PPPiwikClient.RecordType.SalesforceSync:
                     url += "/Sync/" + recordType.ToString();
                     break;
-                case RecordType.DBankImport:
-                case RecordType.OutlookImport:
-                case RecordType.ActImport:
-                case RecordType.LotusNoteImport:
-                case RecordType.SaleforceImport:
-                case RecordType.WcxfImport:
-                case RecordType.CsvImport:
-                case RecordType.VcardImport:
-                case RecordType.JpegImport:
-                case RecordType.DropboxImport:
-                case RecordType.WcfImport:
-                case RecordType.WorldCardv8DBImport:
+                case PPPiwikClient.RecordType.DBankImport:
+                case PPPiwikClient.RecordType.OutlookImport:
+                case PPPiwikClient.RecordType.ActImport:
+                case PPPiwikClient.RecordType.LotusNoteImport:
+                case PPPiwikClient.RecordType.SaleforceImport:
+                case PPPiwikClient.RecordType.WcxfImport:
+                case PPPiwikClient.RecordType.CsvImport:
+                case PPPiwikClient.RecordType.VcardImport:
+                case PPPiwikClient.RecordType.JpegImport:
+                case PPPiwikClient.RecordType.DropboxImport:
+                case PPPiwikClient.RecordType.WcfImport:
+                case PPPiwikClient.RecordType.WorldCardv8DBImport:
                     url += "/Import/" + recordType.ToString();
                     break;
-                case RecordType.DBankExport:
-                case RecordType.OutlookExport:
-                case RecordType.ActExport:
-                case RecordType.LotusNotesExport:
-                case RecordType.SaleforceExport:
-                case RecordType.SaleforceLeadExport:
-                case RecordType.WcxfExport:
-                case RecordType.ExcelExport:
-                case RecordType.CsvExport:
-                case RecordType.VcardExport:
-                case RecordType.JpegExport:
-                case RecordType.DropboxExport:
-                case RecordType.TxtExport:
+                case PPPiwikClient.RecordType.DBankExport:
+                case PPPiwikClient.RecordType.OutlookExport:
+                case PPPiwikClient.RecordType.ActExport:
+                case PPPiwikClient.RecordType.LotusNotesExport:
+                case PPPiwikClient.RecordType.SaleforceExport:
+                case PPPiwikClient.RecordType.SaleforceLeadExport:
+                case PPPiwikClient.RecordType.WcxfExport:
+                case PPPiwikClient.RecordType.ExcelExport:
+                case PPPiwikClient.RecordType.CsvExport:
+                case PPPiwikClient.RecordType.VcardExport:
+                case PPPiwikClient.RecordType.JpegExport:
+                case PPPiwikClient.RecordType.DropboxExport:
+                case PPPiwikClient.RecordType.TxtExport:
                     url += "/Export/" + recordType.ToString();
                     break;
                 default:
@@ -365,130 +368,154 @@ namespace PiwikClientTest
         }
         #endregion
 
+        private void ButtonFunction(PPPiwikClient.RecordType recordType)
+        {
+            GenerateURL(recordType);
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            if (!pc.SendRecord(recordType, null, "en-US"))
+                MessageBox.Show("busy...");
+        }
+
+        private void MySendCompleted(object sender, SendRecordCompleteEventArgs e)
+        {
+            if (e.ExceptionMessage != null)
+            {
+                MessageBox.Show(e.ExceptionMessage);
+            }
+            else
+            {
+                MessageBox.Show(e.SendResult);
+            }
+            progressBar.Visibility = Visibility.Hidden;
+            tabs.IsEnabled = true;
+        }
+
         #region General Usage Buttons
         private void btnUse_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Use);
-            worker.RunWorkerAsync(url);
+            ButtonFunction(PPPiwikClient.RecordType.Use);
+            /*string url = GenerateURL(PPPiwikClient.RecordType.Use);
+            worker.RunWorkerAsync(url);*/
         }
 
         private void btnLinkedin_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.LinkedIn);
+            string url = GenerateURL(PPPiwikClient.RecordType.LinkedIn);
             worker.RunWorkerAsync(url);
         }
 
         private void btnFacebook_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Facebook);
+            string url = GenerateURL(PPPiwikClient.RecordType.Facebook);
             worker.RunWorkerAsync(url);
         }
 
         private void btnWeibo_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SinaWeibo);
+            string url = GenerateURL(PPPiwikClient.RecordType.SinaWeibo);
             worker.RunWorkerAsync(url);
         }
 
         private void btnTwitter_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Twitter);
+            string url = GenerateURL(PPPiwikClient.RecordType.Twitter);
             worker.RunWorkerAsync(url);
         }
 
         private void btnShowMap_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.ShowMap);
+            string url = GenerateURL(PPPiwikClient.RecordType.ShowMap);
             worker.RunWorkerAsync(url);
         }
 
         private void btnRoute_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Route);
+            string url = GenerateURL(PPPiwikClient.RecordType.Route);
             worker.RunWorkerAsync(url);
         }
 
         private void btnSkype_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SkypeOut);
+            string url = GenerateURL(PPPiwikClient.RecordType.SkypeOut);
             worker.RunWorkerAsync(url);
         }
 
         private void btnSkypeSMS_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SkypeSMS);
+            string url = GenerateURL(PPPiwikClient.RecordType.SkypeSMS);
             worker.RunWorkerAsync(url);
         }
 
         private void btnImageView_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.ImageView);
+            string url = GenerateURL(PPPiwikClient.RecordType.ImageView);
             worker.RunWorkerAsync(url);
         }
 
         private void btnRecovery_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Recovery);
+            string url = GenerateURL(PPPiwikClient.RecordType.Recovery);
             worker.RunWorkerAsync(url);
         }
 
         private void btnPrint_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Print);
+            string url = GenerateURL(PPPiwikClient.RecordType.Print);
             worker.RunWorkerAsync(url);
         }
 
         private void btnEmail_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SendMail);
+            string url = GenerateURL(PPPiwikClient.RecordType.SendMail);
             worker.RunWorkerAsync(url);
         }
 
         private void btnWebsite_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.OpenWebSite);
+            string url = GenerateURL(PPPiwikClient.RecordType.OpenWebSite);
             worker.RunWorkerAsync(url);
         }
 
         private void btnEditCard_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.EditCard);
+            string url = GenerateURL(PPPiwikClient.RecordType.EditCard);
             worker.RunWorkerAsync(url);
         }
 
         private void btnFindDuplicate_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.FindDuplicate);
+            string url = GenerateURL(PPPiwikClient.RecordType.FindDuplicate);
             worker.RunWorkerAsync(url);
         }
 
         private void btnFindSameName_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.FindTheSameName);
+            string url = GenerateURL(PPPiwikClient.RecordType.FindTheSameName);
             worker.RunWorkerAsync(url);
         }
 
         private void btnSetCategory_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SetCategory);
+            string url = GenerateURL(PPPiwikClient.RecordType.SetCategory);
             worker.RunWorkerAsync(url);
         }
 
         private void btnAddCardCount_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.AddCardCount);
+            string url = GenerateURL(PPPiwikClient.RecordType.AddCardCount);
             worker.RunWorkerAsync(url);
         }
 
         private void btnManual_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Manual);
+            string url = GenerateURL(PPPiwikClient.RecordType.Manual);
             worker.RunWorkerAsync(url);
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.Search);
+            string url = GenerateURL(PPPiwikClient.RecordType.Search);
             searchKey = tbSearchKey.Text;
             if (string.IsNullOrEmpty(searchKey))
                 return;
@@ -505,37 +532,37 @@ namespace PiwikClientTest
         #region Sync Buttons
         private void btnGmailSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.GoogleSync);
+            string url = GenerateURL(PPPiwikClient.RecordType.GoogleSync);
             worker.RunWorkerAsync(url);
         }
 
         private void btnNasSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.NasSync);
+            string url = GenerateURL(PPPiwikClient.RecordType.NasSync);
             worker.RunWorkerAsync(url);
         }
 
         private void btnActSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.ActSync);
+            string url = GenerateURL(PPPiwikClient.RecordType.ActSync);
             worker.RunWorkerAsync(url);
         }
 
         private void btnOutlookSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.OutlookSync);
+            string url = GenerateURL(PPPiwikClient.RecordType.OutlookSync);
             worker.RunWorkerAsync(url);
         }
 
         private void btnLotusNoteSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.LotusNoteSync);
+            string url = GenerateURL(PPPiwikClient.RecordType.LotusNoteSync);
             worker.RunWorkerAsync(url);
         }
 
         private void btnSalesforceSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SalesforceSync);
+            string url = GenerateURL(PPPiwikClient.RecordType.SalesforceSync);
             worker.RunWorkerAsync(url);
         }
         #endregion
@@ -543,73 +570,73 @@ namespace PiwikClientTest
         #region Import Buttons
         private void btnDbankImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.DBankImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.DBankImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnOutlookImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.OutlookImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.OutlookImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnActImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.ActImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.ActImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnLotusImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.LotusNoteImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.LotusNoteImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnSalesforceImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SaleforceImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.SaleforceImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnWC8Import_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.WorldCardv8DBImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.WorldCardv8DBImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnWCXFImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.WcxfImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.WcxfImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnCSVImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.CsvImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.CsvImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnVCFImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.VcardImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.VcardImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnJpegImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.JpegImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.JpegImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnDrpoboxImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.DropboxImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.DropboxImport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnWCFImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.WcxfImport);
+            string url = GenerateURL(PPPiwikClient.RecordType.WcxfImport);
             worker.RunWorkerAsync(url);
         }
 
@@ -618,79 +645,79 @@ namespace PiwikClientTest
         #region Export Buttons
         private void btnDBankExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.DBankExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.DBankExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnOutlookExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.OutlookExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.OutlookExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnACTExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.ActExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.ActExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnLotusExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.LotusNotesExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.LotusNotesExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnSalesforceExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SaleforceExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.SaleforceExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnLeadExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.SaleforceLeadExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.SaleforceLeadExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnWCXFExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.WcxfExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.WcxfExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnExcelExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.ExcelExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.ExcelExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnCSVExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.CsvExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.CsvExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnVCFExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.VcardExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.VcardExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnJpegExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.JpegExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.JpegExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnDropboxExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.DropboxExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.DropboxExport);
             worker.RunWorkerAsync(url);
         }
 
         private void btnTxtExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(RecordType.TxtExport);
+            string url = GenerateURL(PPPiwikClient.RecordType.TxtExport);
             worker.RunWorkerAsync(url);
         }
         #endregion

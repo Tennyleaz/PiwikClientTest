@@ -24,9 +24,9 @@
 
         <Grid Name="versionSelectGrid" Grid.Row="0">
             <Label>名稱：</Label>
-            <ComboBox Name="cbAppName" Width="150" Height="20" Margin="70,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="cbAppName_SelectionChanged">
-                <ComboBoxItem Name="cbi1">WorldCard Team</ComboBoxItem>
-                <ComboBoxItem Name="cbi2">WorldCard</ComboBoxItem>
+            <ComboBox Name="cbAppName" SelectedValuePath="Content" Width="150" Height="20" Margin="70,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="cbAppName_SelectionChanged">
+                <ComboBoxItem Name="cbi1">WorldCardTeam</ComboBoxItem>
+                <ComboBoxItem Name="cbi2">WorldCard8</ComboBoxItem>
             </ComboBox>
             
             <Label Margin="0,22,0,0">號碼：</Label>
