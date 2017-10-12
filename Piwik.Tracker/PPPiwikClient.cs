@@ -19,7 +19,8 @@ namespace Piwik.Tracker
         private string titleString;
         private string applicationName;
         private string versionNumber;
-        private string responceString;
+        private string responseString;
+        private System.Net.HttpStatusCode responseStatusCode;
         //private string localeName;
         //private string searchKey;
         private int width, height;
@@ -146,7 +147,8 @@ namespace Piwik.Tracker
         {
             SendRecordCompleteEventArgs ea = new SendRecordCompleteEventArgs();
             ea.ExceptionMessage = workerException;
-            ea.SendResult = responceString;
+            ea.SendResult = responseString;
+            ea.HttpStatusCode = responseStatusCode;
             OnSendRecordCompleted(ea);
         }
 
@@ -159,14 +161,17 @@ namespace Piwik.Tracker
                 try
                 {
                     TrackingResponse response = pTracker.DoTrackPageView(titleString);
-                    responceString = response.HttpStatusCode.ToString();
+                    responseString = response.HttpStatusCode.ToString();
                     workerException = null;
+                    responseStatusCode = response.HttpStatusCode;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(e);
+                    // If exception thrown, no status code is provided. We will make one.
+                    //Console.WriteLine(ex);
                     workerException = ex.Message;
-                    responceString = null;
+                    responseString = null;
+                    responseStatusCode = System.Net.HttpStatusCode.BadRequest;
                 }
             }
         }
@@ -322,6 +327,7 @@ namespace Piwik.Tracker
     public class SendRecordCompleteEventArgs : EventArgs
     {
         public string SendResult { get; set; }
-        public string ExceptionMessage { get; set; }        
+        public string ExceptionMessage { get; set; }     
+        public System.Net.HttpStatusCode HttpStatusCode { get; set; }
     }
 }
