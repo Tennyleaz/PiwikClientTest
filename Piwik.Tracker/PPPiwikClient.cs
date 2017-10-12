@@ -297,7 +297,7 @@ namespace Piwik.Tracker
         /// <param name="appLanguage">例如"zh-TW"</param>
         /// <param name="searchKey">搜尋關鍵字</param>
         /// <returns>true=開始傳送 false=忙碌中</returns>
-        public bool SendRecord(RecordType recordType, string customTitle, string appLanguage, string searchKey = null)
+        public bool SendRecord(RecordType recordType, string customTitle = null, string appLanguage = null, string searchKey = null)
         {
             titleString = customTitle;
             string url = GenerateTrackingURL(recordType);
