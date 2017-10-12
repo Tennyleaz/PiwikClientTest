@@ -145,10 +145,14 @@ namespace Piwik.Tracker
         #region Background workers
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            object[] resultArguments = e.Result as object[];
+            if (resultArguments.Count() != 3)
+                resultArguments = new object[] { null, "Unknown Error", System.Net.HttpStatusCode.BadRequest };
+
             SendRecordCompleteEventArgs ea = new SendRecordCompleteEventArgs();
-            ea.ExceptionMessage = workerException;
-            ea.SendResult = responseString;
-            ea.HttpStatusCode = responseStatusCode;
+            ea.ExceptionMessage = resultArguments[0] as string;//workerException;
+            ea.SendResult = resultArguments[1] as string;
+            ea.HttpStatusCode = (System.Net.HttpStatusCode) Enum.Parse(typeof(System.Net.HttpStatusCode), resultArguments[2].ToString());
             OnSendRecordCompleted(ea);
         }
 
@@ -164,6 +168,8 @@ namespace Piwik.Tracker
                     responseString = response.HttpStatusCode.ToString();
                     workerException = null;
                     responseStatusCode = response.HttpStatusCode;
+                    object[] resultArguments = new object[] { response.HttpStatusCode.ToString(), null, response.HttpStatusCode };
+                    e.Result = resultArguments;
                 }
                 catch (Exception ex)
                 {
@@ -172,6 +178,8 @@ namespace Piwik.Tracker
                     workerException = ex.Message;
                     responseString = null;
                     responseStatusCode = System.Net.HttpStatusCode.BadRequest;
+                    object[] resultArguments = new object[] { null, ex.Message, System.Net.HttpStatusCode.BadRequest };
+                    e.Result = resultArguments;
                 }
             }
         }
@@ -308,6 +316,7 @@ namespace Piwik.Tracker
             string url = GenerateTrackingURL(recordType);
             PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
             piwikTracker.SetUrl(url);
+            piwikTracker.RequestTimeout = new TimeSpan(0, 0, 10);
             GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey);
 
             // send in background
