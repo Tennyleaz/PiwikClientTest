@@ -399,6 +399,15 @@ namespace PiwikClientTest
             worker.RunWorkerAsync(url);*/
         }
 
+        private void btnEvent_Click(object sender, RoutedEventArgs e)
+        {
+            GenerateURL(PPPiwikClient.RecordType.Use);
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            if (!pc.SendEvent(tbEventCategory.Text, tbEventAction.Text, tbEventName.Text, tbEventValue.Text))
+                MessageBox.Show("busy...");
+        }
+
         private void btnLinkedin_Click(object sender, RoutedEventArgs e)
         {
             string url = GenerateURL(PPPiwikClient.RecordType.LinkedIn);

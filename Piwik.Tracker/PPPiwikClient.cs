@@ -24,7 +24,8 @@ namespace Piwik.Tracker
         //private string localeName;
         //private string searchKey;
         private int width, height;
-        private BackgroundWorker worker;
+        private BackgroundWorker sendWorker;
+        private BackgroundWorker eventWorker;
         #endregion
 
         #region Send result event definition
@@ -136,11 +137,17 @@ namespace Piwik.Tracker
             uID = userID;
             SiteId = siteID;
 
-            worker = new BackgroundWorker();
-            worker.WorkerSupportsCancellation = false;
-            worker.DoWork += Worker_DoWork;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-        }        
+            sendWorker = new BackgroundWorker();
+            sendWorker.WorkerSupportsCancellation = false;
+            sendWorker.DoWork += Worker_DoWork;
+            sendWorker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+
+            eventWorker = new BackgroundWorker();
+            eventWorker.WorkerSupportsCancellation = false;
+            eventWorker.DoWork += EventWorker_DoWork;
+            eventWorker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+        }
+        
 
         #region Background workers
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -156,6 +163,11 @@ namespace Piwik.Tracker
             OnSendRecordCompleted(ea);
         }
 
+        /// <summary>
+        /// 送URL用的
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             object argument = e.Argument;
@@ -175,6 +187,44 @@ namespace Piwik.Tracker
                 {
                     // If exception thrown, no status code is provided. We will make one.
                     //Console.WriteLine(ex);
+                    workerException = ex.Message;
+                    responseString = null;
+                    responseStatusCode = System.Net.HttpStatusCode.BadRequest;
+                    object[] resultArguments = new object[] { null, ex.Message, System.Net.HttpStatusCode.BadRequest };
+                    e.Result = resultArguments;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 送Event用的
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EventWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            object[] arguments = e.Argument as object[];
+            if (arguments.Count() != 5)
+                return;
+
+            // arguments = { piwikTracker, eventCategory, eventAction, eventName, eventValue };
+            string eventCategory, eventAction, eventName, eventValue;
+            PiwikTracker pTracker = arguments[0] as PiwikTracker;
+            eventCategory = arguments[1] as string;
+            eventAction = arguments[2] as string;
+            eventName = arguments[3] as string;
+            eventValue = arguments[4] as string;
+            if (pTracker != null)
+            {
+                try
+                {
+                    TrackingResponse response = pTracker.DoTrackEvent(eventCategory, eventAction, eventName, eventValue);
+                    object[] resultArguments = new object[] { response.HttpStatusCode.ToString(), null, response.HttpStatusCode };
+                    e.Result = resultArguments;
+                }
+                catch (Exception ex)
+                {
+                    // If exception thrown, no status code is provided. We will make one.
                     workerException = ex.Message;
                     responseString = null;
                     responseStatusCode = System.Net.HttpStatusCode.BadRequest;
@@ -299,6 +349,7 @@ namespace Piwik.Tracker
             tracker.SetResolution(width, height);
             tracker.SetUserAgent(UA);
             tracker.SetUserId(uID);
+            tracker.RequestTimeout = new TimeSpan(0, 0, 10);
         }
 
         /// <summary>
@@ -315,14 +366,42 @@ namespace Piwik.Tracker
             titleString = customTitle;
             string url = GenerateTrackingURL(recordType);
             PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
-            piwikTracker.SetUrl(url);
-            piwikTracker.RequestTimeout = new TimeSpan(0, 0, 10);
+            piwikTracker.SetUrl(url);            
             GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey);
 
             // send in background
-            if (!worker.IsBusy)
+            if (!sendWorker.IsBusy)
             {
-                worker.RunWorkerAsync(piwikTracker);
+                sendWorker.RunWorkerAsync(piwikTracker);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// 傳送一個事件紀錄給伺服器
+        /// </summary>
+        /// <param name="eventCategory"></param>
+        /// <param name="eventAction"></param>
+        /// <param name="eventName"></param>
+        /// <param name="eventValue"></param>
+        /// <returns>true=開始傳送 false=忙碌中</returns>
+        public bool SendEvent(string eventCategory, string eventAction, string eventName = "", string eventValue = "")
+        {
+            if (string.IsNullOrWhiteSpace(eventCategory))
+                throw new ArgumentNullException(eventCategory, "Event category cannot be empty.");
+            if (string.IsNullOrWhiteSpace(eventAction))
+                throw new ArgumentNullException(eventAction, "Event action cannot be empty.");
+
+            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
+            GenerateAdditionalProperties(ref piwikTracker, null);            
+
+            // send in background
+            if (!eventWorker.IsBusy)
+            {
+                object[] arguments = { piwikTracker, eventCategory, eventAction, eventName, eventValue };
+                eventWorker.RunWorkerAsync(arguments);
                 return true;
             }
             else
@@ -336,7 +415,7 @@ namespace Piwik.Tracker
     public class SendRecordCompleteEventArgs : EventArgs
     {
         public string SendResult { get; set; }
-        public string ExceptionMessage { get; set; }     
+        public string ExceptionMessage { get; set; }
         public System.Net.HttpStatusCode HttpStatusCode { get; set; }
     }
 }

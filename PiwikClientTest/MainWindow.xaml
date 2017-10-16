@@ -78,6 +78,21 @@
                     <Label Content="關鍵字:" Margin="220,0,0,0"/>
                     <TextBox Name="tbSearchKey" Height="20" Width="110" Margin="270,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <Button Name="btnSearch" Content="搜尋" Margin="380,0,0,0" Click="btnSearch_Click"/>
+
+                    <GroupBox Header="Event" Width="260" Height="200" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10, 30">
+                        <Grid>
+                            <Label Content="Event Category:" Margin="0,0,0,0"/>
+                            <TextBox Name="tbEventCategory" Height="20" Width="110" Margin="0,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <Label Content="Event Action:" Margin="120,0,0,0"/>
+                            <TextBox Name="tbEventAction" Height="20" Width="110" Margin="120,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <Label Content="Event Name:" Margin="0,60,0,0"/>
+                            <TextBox Name="tbEventName" Height="20" Width="110" Margin="0,90,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <Label Content="Event Value:" Margin="120,60,0,0"/>
+                            <TextBox Name="tbEventValue" Height="20" Width="110" Margin="120,90,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <Button Name="btnEvent" Content="Send Event" Margin="0,120,0,0" Click="btnEvent_Click"/>
+                        </Grid>    
+                    </GroupBox>
+                    
                 </Grid>
             </TabItem>
             
