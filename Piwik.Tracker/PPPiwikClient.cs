@@ -102,7 +102,8 @@ namespace Piwik.Tracker
             JpegExport,
             DropboxExport,
             TxtExport,
-            Search
+            Search,
+            CustomEvent
         }
 
         /// <summary>
@@ -394,7 +395,9 @@ namespace Piwik.Tracker
             if (string.IsNullOrWhiteSpace(eventAction))
                 throw new ArgumentNullException(eventAction, "Event action cannot be empty.");
 
+            string url = GenerateTrackingURL(RecordType.CustomEvent);
             PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
+            piwikTracker.SetUrl(url);
             GenerateAdditionalProperties(ref piwikTracker, null);            
 
             // send in background
