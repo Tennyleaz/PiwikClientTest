@@ -141,6 +141,15 @@
                     <Button Name="btnTxtExport" Content="Txt匯出" Margin="110,30,0,0" Click="btnTxtExport_Click"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="隨機產生">
+                <Grid>
+                    <Button Name="btnRandom" Content="產生隨機紀錄" Margin="10,0,0,0" Click="btnRandom_Click"/>
+                    <Label Content="筆數：" Margin="0,30"/>
+                    <TextBox Name="tbRandom" Height="20" Width="50" Margin="40,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">10</TextBox>
+                    <Label Content="Threads：" Margin="0,60"/>
+                    <TextBox Name="tbThreads" Height="20" Width="50" Margin="60,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">3</TextBox>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

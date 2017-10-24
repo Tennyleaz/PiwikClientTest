@@ -11,7 +11,7 @@ namespace Piwik.Tracker
     {
         #region Private members
         private string UA;// = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
-        private static readonly string PiwikBaseUrl = "http://13.94.36.109";
+        private static readonly string PiwikBaseUrl = "http://10.10.12.93";
         private static int SiteId = 2;  //Piwik控制台裡面設定的site id號碼，對應不同產品
 
         private string workerException;

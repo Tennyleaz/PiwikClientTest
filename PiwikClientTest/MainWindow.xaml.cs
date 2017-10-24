@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,7 @@ namespace PiwikClientTest
         /// https://www.whatismybrowser.com/developers/guides/unknown-user-agent-fragments
         /// 
         private string UA;// = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
-        private static readonly string PiwikBaseUrl = "http://13.94.36.109";
+        private static readonly string PiwikBaseUrl = "http://10.10.12.93";
         private static int SiteId = 2;  //Piwik控制台裡面設定的site id號碼，對應不同產品
 
         private BackgroundWorker worker;
@@ -143,6 +144,17 @@ namespace PiwikClientTest
             progressBar.Visibility = Visibility.Hidden;
             tabs.IsEnabled = true;
             tbSearchKey.Text = "";
+            sw.Stop();
+            float timeperloop = (float)sw.Elapsed.Seconds / (float)(totalloops * threads);
+            string s = "total " + sw.Elapsed.Seconds + " seconds for " + totalloops + "*" + threads + " requests,  average " + timeperloop + " seconds per request";
+            //Console.WriteLine(s);
+            sw.Reset();
+            TimeSpan delta = DateTime.Now.Subtract(lastDT);
+            s = "timespan is " + delta.TotalSeconds;
+            Console.WriteLine(s);
+            timeperloop = (float)delta.TotalSeconds / (float)(totalloops * threads);
+            s = "total " + delta.TotalSeconds + " seconds for " + totalloops + "*" + threads + " requests,  average " + timeperloop + " seconds per request";
+            Console.WriteLine(s);
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
@@ -244,7 +256,7 @@ namespace PiwikClientTest
             piwikTracker.SetUrl(url);
             //piwikTracker.SetCustomTrackingParameter("dimension2", versionNumber);
             
-            piwikTracker.SetBrowserLanguage("en-US");
+            //piwikTracker.SetBrowserLanguage("en-US");
             piwikTracker.SetGenerationTime(1000);
 
             if (!string.IsNullOrEmpty(key))
@@ -266,31 +278,55 @@ namespace PiwikClientTest
             }
         }
 
-        private string GenerateURL(PPPiwikClient.RecordType recordType)
+        private int lastSeletedIndex = 0;
+        private string GenerateURL(PPPiwikClient.RecordType recordType, bool isForeground = true)
         {
-            tabs.IsEnabled = false;
-            progressBar.Visibility = Visibility.Visible;
-
-            uID = tbUserID.Text;
-            titleString = tbTitle.Text;
-            versionNumber = tbVersionNumber.Text;
-            lbResult.Content = "";
-
-            int.TryParse(tbWidth.Text, out width);
-            int.TryParse(tbHeight.Text, out height);
-
             string url = "http://";
-            if (cbAppName.SelectedIndex == 0) //WCT
+            if (isForeground)
             {
-                url += "WorldCardTeam/";
-                if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
-                    versionNumber = "v1.0.0";
+                tabs.IsEnabled = false;
+                progressBar.Visibility = Visibility.Visible;
+
+                uID = tbUserID.Text;
+                titleString = tbTitle.Text;
+                versionNumber = tbVersionNumber.Text;
+                lbResult.Content = "";
+
+                int.TryParse(tbWidth.Text, out width);
+                int.TryParse(tbHeight.Text, out height);
+
+                //string url = "http://";
+                if (cbAppName.SelectedIndex == 0) //WCT
+                {
+                    url += "WorldCardTeam/";
+                    if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
+                        versionNumber = "v1.0.0";
+                    lastSeletedIndex = 0;
+                }
+                else  //WC8
+                {
+                    url += "WorldCard8/";
+                    if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
+                        versionNumber = "v8.5.6";
+                    lastSeletedIndex = 1;
+                }
             }
-            else  //WC8
+            else
             {
-                url += "WorldCard8/";
-                if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
-                    versionNumber = "v8.5.6";
+                if (lastSeletedIndex == 0) //WCT
+                {
+                    url += "WorldCardTeam/";
+                    if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
+                        versionNumber = "v1.0.0";
+                    lastSeletedIndex = 0;
+                }
+                else  //WC8
+                {
+                    url += "WorldCard8/";
+                    if (string.IsNullOrWhiteSpace(versionNumber) || !versionNumber.StartsWith("v"))
+                        versionNumber = "v8.5.6";
+                    lastSeletedIndex = 1;
+                }
             }
 
             url += versionNumber;
@@ -394,9 +430,9 @@ namespace PiwikClientTest
         #region General Usage Buttons
         private void btnUse_Click(object sender, RoutedEventArgs e)
         {
-            ButtonFunction(PPPiwikClient.RecordType.Use);
-            /*string url = GenerateURL(PPPiwikClient.RecordType.Use);
-            worker.RunWorkerAsync(url);*/
+            //ButtonFunction(PPPiwikClient.RecordType.Use);
+            string url = GenerateURL(PPPiwikClient.RecordType.Use);
+            worker.RunWorkerAsync(url);
         }
 
         private void btnEvent_Click(object sender, RoutedEventArgs e)
@@ -722,7 +758,7 @@ namespace PiwikClientTest
         {
             string url = GenerateURL(PPPiwikClient.RecordType.DropboxExport);
             worker.RunWorkerAsync(url);
-        }
+        }        
 
         private void btnTxtExport_Click(object sender, RoutedEventArgs e)
         {
@@ -731,6 +767,111 @@ namespace PiwikClientTest
         }
         #endregion
 
+        #region Random Tests
+        int threads = 3;
+        int totalloops;
+        Stopwatch sw = new Stopwatch();
+        DateTime lastDT;
+        private void btnRandom_Click(object sender, RoutedEventArgs e)
+        {
+            lastDT = DateTime.Now;
+            Console.WriteLine(lastDT);
+            sw.Start();
+            int loops = 10;
+            int.TryParse(tbRandom.Text, out loops);
+            int.TryParse(tbThreads.Text, out threads);
+            GenerateURL(PPPiwikClient.RecordType.Use); // place-holder
+            BackgroundWorker randomWorker = new BackgroundWorker();
+            randomWorker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            randomWorker.DoWork += RandomWorker_DoWork;
+            randomWorker.RunWorkerAsync(loops);
+            totalloops = loops;
+        }
 
+        private void RandomWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            object obj = e.Argument;
+            int loops = (int)obj;
+            //System.Threading.Thread.Sleep(5000);
+            try
+            {
+                
+                //Task[] taskArray = new Task[threads];
+                List<Task> taskArray = new List<Task>();
+                for (int i=0; i< threads; i++)
+                {
+                    int count = i +1 ;
+                    Task t = new Task(() => DoStuff(loops, count));  //Task.Factory.StartNew(() => DoStuff(loops, i));
+                    t.Start();
+                    taskArray.Add(t);
+                }
+                /*Task task1 = Task.Factory.StartNew(() => DoStuff(loops, 0));
+                Task task2 = Task.Factory.StartNew(() => DoStuff(loops, 1));
+                Task task3 = Task.Factory.StartNew(() => DoStuff(loops, 2));*/
+
+                Task.WaitAll(taskArray.ToArray());
+                Console.WriteLine("done");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void DoStuff(int loops, int threadID)
+        {
+            Array values = Enum.GetValues(typeof(PPPiwikClient.RecordType));
+            string[] os = { "6.0", "6.1", "6.2", "6.3", "10.0" };
+            Random random = new Random();
+            try
+            {
+                Console.WriteLine("thread[" + threadID + "] start...");
+                //Stopwatch sw = new Stopwatch();
+                //sw.Start();
+                for (int i = 0; i < loops; i++)
+                {
+                    PPPiwikClient.RecordType randomType = (PPPiwikClient.RecordType)values.GetValue(random.Next(values.Length));
+                    // 隨機姓名
+                    if (i % 3 == 0)
+                        uID = GenerateName(7);
+                    // 隨機OS版本
+                    string osver = (string)os.GetValue(random.Next(os.Length));
+                    UA = "Mozilla/5.0 (Windows NT " + osver + "; WOW64)";
+                    string url = GenerateURL(randomType, false);
+                    if (!string.IsNullOrEmpty(url))
+                        RecordSimplePageViewWithCustomProperties(url);
+                    System.Threading.Thread.Sleep(1);
+                }
+                //sw.Stop();
+                Console.WriteLine("thread[" + threadID + "] stop");//watch time = " + sw.Elapsed.Seconds + " seconds in " + loops + " loops");
+                //float timeperloop = (float)sw.Elapsed.Seconds / (float)loops;
+                //Console.WriteLine("thread[" + threadID + "] average " + timeperloop  + " seconds per loop");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static string GenerateName(int len)
+        {
+            Random r = new Random();
+            string[] consonants = { "b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "l", "n", "p", "q", "r", "s", "sh", "zh", "t", "v", "w", "x" };
+            string[] vowels = { "a", "e", "i", "o", "u", "ae", "y" };
+            string Name = "";
+            Name += consonants[r.Next(consonants.Length)].ToUpper();
+            Name += vowels[r.Next(vowels.Length)];
+            int b = 2; //b tells how many times a new letter has been added. It's 2 right now because the first two letters are already in the name.
+            while (b < len)
+            {
+                Name += consonants[r.Next(consonants.Length)];
+                b++;
+                Name += vowels[r.Next(vowels.Length)];
+                b++;
+            }
+
+            return Name;
+        }
+        #endregion
     }
 }

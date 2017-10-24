@@ -1,0 +1,69 @@
+ sudo /bin/bash -c "/usr/bin/php7.0 /var/www/piwik.penpower/public_html/console core:archive --url=http://piwik.penpower/"
+
+1000 request:
+total 40 seconds for 1000*2 requests,  average 0.02 seconds per request
+total 57 seconds for 1000*3 requests,  average 0.019 seconds per request
+
+total 90.0364555 seconds for 1000*1 requests,  average 0.09003645 seconds per request
+total 81.8014748 seconds for 1000*2 requests,  average 0.04090074 seconds per request
+total 72.5625601 seconds for 1000*3 requests,  average 0.02418752 seconds per request
+total 163.3267704 seconds for 1000*3 requests,  average 0.05444226 seconds per request
+total 76.8051335 seconds for 1000*4 requests,  average 0.01920128 seconds per request
+total 81.4929669 seconds for 1000*5 requests,  average 0.01629859 seconds per request
+total 93.332479 seconds for 1000*6 requests,  average 0.01555541 seconds per request
+
+--
+
+total 51.7965433 seconds for 1000*3 requests,  average 0.01726551 seconds per request
+total 71.3829925 seconds for 1000*4 requests,  average 0.01784575 seconds per request
+total 185.4623643 seconds for 1000*5 requests,  average 0.03709247 seconds per request
+total 248.6293864 seconds for 1000*6 requests,  average 0.04143823 seconds per request
+total 105.2514744 seconds for 1000*1 requests,  average 0.1052515 seconds per request
+total 80.7718322 seconds for 1000*1 requests,  average 0.08077183 seconds per request
+
+--
+10/20 clear
+total 99.3337575 seconds for 1000*6 requests,  average 0.01655563 seconds per request
+total 80.4051316 seconds for 1000*5 requests,  average 0.01608103 seconds per request
+total 72.2417923 seconds for 1000*4 requests,  average 0.01806045 seconds per request
+total 51.9732677 seconds for 1000*3 requests,  average 0.01732442 seconds per request
+total 39.1675085 seconds for 1000*2 requests,  average 0.01958375 seconds per request
+total 41.7006077 seconds for 1000*1 requests,  average 0.04170061 seconds per request
+total 42.1512205 seconds for 1000*1 requests,  average 0.04215122 seconds per request
+
+--
+10/21
+total 37.9328348 seconds for 1000*1 requests,  average 0.03793284 seconds per request
+total 34.5085718 seconds for 1000*2 requests,  average 0.01725429 seconds per request
+total 60.3629545 seconds for 1000*3 requests,  average 0.02012098 seconds per request
+total 80.2509214 seconds for 1000*4 requests,  average 0.02006273 seconds per request
+total 76.9318582 seconds for 1000*5 requests,  average 0.01538637 seconds per request
+total 88.6319267 seconds for 1000*6 requests,  average 0.01477199 seconds per request
+total 49.7312578 seconds for 1000*1 requests,  average 0.04973126 seconds per request
+total 61.0432052 seconds for 1000*2 requests,  average 0.0305216 seconds per request
+total 50.0464225 seconds for 1000*3 requests,  average 0.01668214 seconds per request
+total 62.5210894 seconds for 1000*4 requests,  average 0.01563027 seconds per request
+total 99.8849442 seconds for 1000*5 requests,  average 0.01997699 seconds per request
+
+--
+10/22
+total 49.6847721 seconds for 1000*3 requests,  average 0.01656159 seconds per request
+total 67.2173968 seconds for 1000*4 requests,  average 0.01680435 seconds per request
+total 126.4097338 seconds for 1000*5 requests,  average 0.02528195 seconds per request
+total 165.9330462 seconds for 1000*5 requests,  average 0.03318661 seconds per request
+total 192.7642482 seconds for 1000*6 requests,  average 0.03212738 seconds per request
+total 86.111719 seconds for 1000*2 requests,  average 0.04305586 seconds per request
+total 41.4033279 seconds for 1000*1 requests,  average 0.04140333 seconds per request
+total 35.7802865 seconds for 1000*1 requests,  average 0.03578028 seconds per request
+total 35.8817521 seconds for 1000*2 requests,  average 0.01794088 seconds per request
+total 57.495293 seconds for 1000*3 requests,  average 0.0191651 seconds per request
+total 103.4728729 seconds for 1000*7 requests,  average 0.01478184 seconds per request
+
+--
+10/23
+total 51.7470642 seconds for 1000*3 requests,  average 0.01724902 seconds per request
+total 112.8105459 seconds for 1000*7 requests,  average 0.01611579 seconds per request
+total 37.0144383 seconds for 1000*1 requests,  average 0.03701444 seconds per request
+total 36.0764207 seconds for 1000*2 requests,  average 0.01803821 seconds per request
+total 51.1457639 seconds for 1000*3 requests,  average 0.01704859 seconds per request
+total 64.2570227 seconds for 1000*4 requests,  average 0.01606425 seconds per request
