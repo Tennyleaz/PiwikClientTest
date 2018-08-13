@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PiwikClientTest"
         mc:Ignorable="d"
-        Title="Piwik Test" Height="550" Width="500" Loaded="Window_Loaded">
+        Title="Piwik Test" Height="550" Width="510" Loaded="Window_Loaded">
     
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
@@ -38,16 +38,17 @@
             <Label Margin="0,68,0,0">自訂標題：</Label>
             <TextBox Name="tbTitle" Width="150" Height="20"  Margin="70,72,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-            <Label Margin="250,0,0,0">OS:</Label>
+            <Label Margin="250,0,0,0" Height="25" VerticalAlignment="Top">裝置:</Label>
             <Label Name="lbOS" Margin="300,0,0,0">Win 0.0</Label>
+            <Button Name="btnFake" Content="切換裝置" Margin="250,72,0,0" Click="btnFakeDevice_Click"/>
 
-            <Label Margin="250,22,0,0">螢幕：</Label>
+            <Label Margin="250,22,0,0" Height="25" VerticalAlignment="Top">螢幕：</Label>
             <TextBox Name="tbWidth" Width="60" Height="20"  Margin="300,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput"/>
             <Label Margin="360,22,0,0">X</Label>
             <TextBox Name="tbHeight" Width="60" Height="20"  Margin="380,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput"/>
 
-            <Label Margin="250,45,0,0">Result:</Label>
-            <Label Name="lbResult" Margin="300,45,0,0">???</Label>
+            <Label Margin="250,45,0,0" Height="25" VerticalAlignment="Top">Result:</Label>
+            <Label Name="lbResult" Margin="300,45,0,0" Height="25" VerticalAlignment="Top">???</Label>
 
             <ProgressBar Name="progressBar" Margin="250,72,0,0" Width="200" Height="20" IsIndeterminate="True" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden"/>
         </Grid>
@@ -92,7 +93,10 @@
                             <Button Name="btnEvent" Content="Send Event" Margin="0,120,0,0" Click="btnEvent_Click"/>
                         </Grid>    
                     </GroupBox>
-                    
+
+                    <Label Margin="10,330,0,0">隨意輸入！用斜線 / 分隔功能：</Label>
+                    <TextBox Name="tbFreeInput" Height="20" Width="380" Margin="15,350,0,0" HorizontalAlignment="Left"/>
+                    <Button Name="btnFreeInput" Content="送出" Margin="390,350,0,0" Width="60" Click="btnFreeInput_Click" Style="{x:Null}"/>
                 </Grid>
             </TabItem>
             

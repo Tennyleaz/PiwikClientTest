@@ -10,9 +10,10 @@ namespace Piwik.Tracker
     public class PPPiwikClient
     {
         #region Private members
-        private string UA;// = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
-        private static readonly string PiwikBaseUrl = "http://10.10.12.93";
-        private static int SiteId = 2;  //Piwik控制台裡面設定的site id號碼，對應不同產品
+        private string UA;  // = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
+        private static readonly string PiwikBaseUrl = "http://10.10.12.39";
+        private static int SiteId = 1;  //Piwik控制台裡面設定的site id號碼，對應不同產品
+        private static readonly int TIMEOUT_SECOUND = 10;
 
         private string workerException;
         private string uID;
@@ -120,8 +121,8 @@ namespace Piwik.Tracker
             #region 檢查用
             if (string.IsNullOrEmpty(appName))
                 throw new ArgumentNullException(appName, "App name must be not null or empty.");
-            if (string.IsNullOrEmpty(userID))
-                throw new ArgumentNullException(userID, "User ID must be not null or empty.");
+            //if (string.IsNullOrEmpty(userID))
+            //    throw new ArgumentNullException(userID, "User ID must be not null or empty.");
             if (string.IsNullOrEmpty(version))
                 throw new ArgumentNullException(version, "Version must be not null or empty.");
             #endregion
@@ -158,8 +159,8 @@ namespace Piwik.Tracker
                 resultArguments = new object[] { null, "Unknown Error", System.Net.HttpStatusCode.BadRequest };
 
             SendRecordCompleteEventArgs ea = new SendRecordCompleteEventArgs();
-            ea.ExceptionMessage = resultArguments[0] as string;//workerException;
-            ea.SendResult = resultArguments[1] as string;
+            ea.SendResult = resultArguments[0] as string;
+            ea.ExceptionMessage = resultArguments[1] as string;//workerException;            
             ea.HttpStatusCode = (System.Net.HttpStatusCode) Enum.Parse(typeof(System.Net.HttpStatusCode), resultArguments[2].ToString());
             OnSendRecordCompleted(ea);
         }
@@ -349,8 +350,8 @@ namespace Piwik.Tracker
             // private variables
             tracker.SetResolution(width, height);
             tracker.SetUserAgent(UA);
-            tracker.SetUserId(uID);
-            tracker.RequestTimeout = new TimeSpan(0, 0, 10);
+            tracker.SetUserId(uID);            
+            tracker.RequestTimeout = new TimeSpan(0, 0, TIMEOUT_SECOUND);
         }
 
         /// <summary>
@@ -368,6 +369,35 @@ namespace Piwik.Tracker
             string url = GenerateTrackingURL(recordType);
             PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
             piwikTracker.SetUrl(url);            
+            GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey);
+
+            // send in background
+            if (!sendWorker.IsBusy)
+            {
+                sendWorker.RunWorkerAsync(piwikTracker);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// 傳送一個任意的url功能
+        /// </summary>
+        /// <param name="strFreeInput"></param>
+        /// <param name="customTitle">可以自訂的標題</param>
+        /// <param name="appLanguage">例如"zh-TW"</param>
+        /// <param name="searchKey">搜尋關鍵字</param>
+        /// <returns>true=開始傳送 false=忙碌中</returns>
+        public bool SendFreeInput(string strFreeInput, string customTitle = null, string appLanguage = null, string searchKey = null)
+        {
+            if (string.IsNullOrWhiteSpace(strFreeInput))
+                return false;
+
+            titleString = customTitle;
+            string url = "http://" + applicationName + "/" + versionNumber + "/" + strFreeInput;
+            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
+            piwikTracker.SetUrl(url);
             GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey);
 
             // send in background
@@ -409,6 +439,11 @@ namespace Piwik.Tracker
             }
             else
                 return false;
+        }
+
+        public void SetUA(string strUA)
+        {
+            UA = strUA;
         }
     }
 

@@ -29,10 +29,10 @@ namespace PiwikClientTest
         /// https://www.whatismybrowser.com/developers/guides/unknown-user-agent-fragments
         /// 
         private string UA;// = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
-        private static readonly string PiwikBaseUrl = "http://10.10.12.93";
-        private static int SiteId = 2;  //Piwik控制台裡面設定的site id號碼，對應不同產品
+        private static readonly string PiwikBaseUrl = "http://10.10.12.39";
+        private static int SiteId = 1;  //Piwik控制台裡面設定的site id號碼，對應不同產品
 
-        private BackgroundWorker worker;
+        //private BackgroundWorker worker;
         private string workerException;
         private string uID;
         private string titleString;
@@ -107,23 +107,49 @@ namespace PiwikClientTest
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            int osMajor = Environment.OSVersion.Version.Major;
-            int osMinor = Environment.OSVersion.Version.Minor;
-            UA = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64)";
+            // locale of user environment
             CultureInfo ci = CultureInfo.CurrentCulture;
             localeName = ci.Name;
+            // basic windows version
+            int osMajor = Environment.OSVersion.Version.Major;
+            int osMinor = Environment.OSVersion.Version.Minor;            
+            UA = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64)";
             lbOS.Content = "Windows NT " + osMajor + "." + osMinor + ", " + localeName;
+            // default app is worldcardteam
             cbAppName.SelectedIndex = 0;
-
+            // default screen resuolsion
             tbWidth.Text = SystemParameters.PrimaryScreenWidth.ToString();
             tbHeight.Text = SystemParameters.PrimaryScreenHeight.ToString();
 
-            worker = new BackgroundWorker();
+            this.Title += " (" + PiwikBaseUrl + ")";
+
+            /*worker = new BackgroundWorker();
             worker.WorkerSupportsCancellation = false;
             worker.WorkerReportsProgress = true;
             worker.DoWork += Worker_DoWork;
             worker.ProgressChanged += Worker_ProgressChanged;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;*/
+        }
+
+        private void btnFakeDevice_Click(object sender, RoutedEventArgs e)
+        {
+            User_agent_window uaw = new User_agent_window();
+            uaw.Owner = this;
+            uaw.ShowDialog();
+            
+            if (!string.IsNullOrEmpty(uaw.Culture_String))
+                localeName = uaw.Culture_String;
+            if (!string.IsNullOrEmpty(uaw.UA_String))
+            {
+                UA = uaw.UA_String;
+                lbOS.Content = uaw.UA_Display_String + ", " + localeName;
+            }
+            else
+            {
+                int osMajor = Environment.OSVersion.Version.Major;
+                int osMinor = Environment.OSVersion.Version.Minor;
+                lbOS.Content = "Windows NT " + osMajor + "." + osMinor + ", " + localeName;
+            }
         }
 
         #region Background Workers
@@ -136,7 +162,7 @@ namespace PiwikClientTest
         {
             if (!string.IsNullOrEmpty(workerException))
             {
-                MessageBox.Show(workerException);
+                MessageBox.Show(this, workerException);
                 lbResult.Content = workerException;
             }
             else
@@ -144,10 +170,10 @@ namespace PiwikClientTest
             progressBar.Visibility = Visibility.Hidden;
             tabs.IsEnabled = true;
             tbSearchKey.Text = "";
+            // show time spent in console
             sw.Stop();
             float timeperloop = (float)sw.Elapsed.Seconds / (float)(totalloops * threads);
-            string s = "total " + sw.Elapsed.Seconds + " seconds for " + totalloops + "*" + threads + " requests,  average " + timeperloop + " seconds per request";
-            //Console.WriteLine(s);
+            string s = "total " + sw.Elapsed.Seconds + " seconds for " + totalloops + "*" + threads + " requests,  average " + timeperloop + " seconds per request";            
             sw.Reset();
             TimeSpan delta = DateTime.Now.Subtract(lastDT);
             s = "timespan is " + delta.TotalSeconds;
@@ -159,6 +185,7 @@ namespace PiwikClientTest
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            BackgroundWorker worker = sender as BackgroundWorker;
             worker.ReportProgress(1);
             object obj = e.Argument;
             string url = obj as string;
@@ -400,39 +427,49 @@ namespace PiwikClientTest
                     url += "/Undefined/" + recordType.ToString();
                     break;
             }
+            //if (string.IsNullOrEmpty(uID))
+            //    uID = Guid.NewGuid().ToString();
             return url;
         }
         #endregion
 
-        private void ButtonFunction(PPPiwikClient.RecordType recordType)
+        /*private void ButtonFunction(PPPiwikClient.RecordType recordType)
         {
             GenerateURL(recordType);
             PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
             pc.SendRecordCompleted += MySendCompleted;
             if (!pc.SendRecord(recordType, null, "en-US"))
                 MessageBox.Show("busy...");
-        }
+        }*/
 
         private void MySendCompleted(object sender, SendRecordCompleteEventArgs e)
         {
             if (e.ExceptionMessage != null)
             {
-                MessageBox.Show(e.ExceptionMessage);
+                MessageBox.Show(this, e.ExceptionMessage);
+                lbResult.Content = e.ExceptionMessage;
             }
             else
             {
-                MessageBox.Show(e.SendResult);
+                //MessageBox.Show(this, e.SendResult);
+                lbResult.Content = e.SendResult;
             }
             progressBar.Visibility = Visibility.Hidden;
             tabs.IsEnabled = true;
+            tbSearchKey.Text = "";            
         }
 
         #region General Usage Buttons
         private void btnUse_Click(object sender, RoutedEventArgs e)
         {
             //ButtonFunction(PPPiwikClient.RecordType.Use);
-            string url = GenerateURL(PPPiwikClient.RecordType.Use);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.Use);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);            
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Use, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnEvent_Click(object sender, RoutedEventArgs e)
@@ -440,249 +477,456 @@ namespace PiwikClientTest
             GenerateURL(PPPiwikClient.RecordType.Use);
             PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
             pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
             if (!pc.SendEvent(tbEventCategory.Text, tbEventAction.Text, tbEventName.Text, tbEventValue.Text))
-                MessageBox.Show("busy...");
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnLinkedin_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.LinkedIn);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.LinkedIn);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.LinkedIn, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnFacebook_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.Facebook);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.Facebook);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Facebook, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnWeibo_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SinaWeibo);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SinaWeibo);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SinaWeibo, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnTwitter_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.Twitter);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.Twitter);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Twitter, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnShowMap_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.ShowMap);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.ShowMap);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.ShowMap, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnRoute_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.Route);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.Route);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Route, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnSkype_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SkypeOut);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SkypeOut);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SkypeOut, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnSkypeSMS_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SkypeSMS);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SkypeSMS);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SkypeSMS, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnImageView_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.ImageView);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.ImageView);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.ImageView, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnRecovery_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.Recovery);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.Recovery);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Recovery, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnPrint_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.Print);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.Print);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Print, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnEmail_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SendMail);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SendMail);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SendMail, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnWebsite_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.OpenWebSite);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.OpenWebSite);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.OpenWebSite, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnEditCard_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.EditCard);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.EditCard);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.EditCard, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnFindDuplicate_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.FindDuplicate);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.FindDuplicate);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.FindDuplicate, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnFindSameName_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.FindTheSameName);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.FindTheSameName);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.FindTheSameName, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnSetCategory_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SetCategory);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SetCategory);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SetCategory, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnAddCardCount_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.AddCardCount);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.AddCardCount);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.AddCardCount, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnManual_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.Manual);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.Manual);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Manual, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.Search);
+            GenerateURL(PPPiwikClient.RecordType.Search);
             searchKey = tbSearchKey.Text;
             if (string.IsNullOrEmpty(searchKey))
                 return;
 
-            object[] arguments = { url, searchKey };
+            /*object[] arguments = { url, searchKey };
             BackgroundWorker bkworker = new BackgroundWorker();
             bkworker.DoWork += Bkworker_DoWorkSearch;
             bkworker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             bkworker.ProgressChanged += Worker_ProgressChanged;
-            bkworker.RunWorkerAsync(arguments);
+            bkworker.RunWorkerAsync(arguments);*/
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.Search, tbTitle.Text, localeName, searchKey))
+                MessageBox.Show(this, "busy...");
         }
+
+        private void btnFreeInput_Click(object sender, RoutedEventArgs e)
+        {
+            string strFreeInput = tbFreeInput.Text;
+            if (string.IsNullOrWhiteSpace(strFreeInput))
+                return;
+
+            GenerateURL(PPPiwikClient.RecordType.CustomEvent);
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendFreeInput(strFreeInput, tbTitle.Text, localeName, searchKey))
+                MessageBox.Show(this, "busy...");
+            tbFreeInput.Text = string.Empty;
+        }
+
         #endregion
 
         #region Sync Buttons
         private void btnGmailSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.GoogleSync);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.GoogleSync);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.GoogleSync, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnNasSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.NasSync);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.NasSync);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.NasSync, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnActSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.ActSync);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.ActSync);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.ActSync, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnOutlookSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.OutlookSync);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.OutlookSync);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.OutlookSync, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnLotusNoteSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.LotusNoteSync);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.LotusNoteSync);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.LotusNoteSync, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnSalesforceSync_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SalesforceSync);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SalesforceSync);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SalesforceSync, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
         #endregion
 
         #region Import Buttons
         private void btnDbankImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.DBankImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.DBankImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.DBankImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnOutlookImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.OutlookImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.OutlookImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.OutlookImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnActImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.ActImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.ActImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.ActImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnLotusImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.LotusNoteImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.LotusNoteImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.LotusNoteImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnSalesforceImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SaleforceImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SaleforceImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SaleforceImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnWC8Import_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.WorldCardv8DBImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.WorldCardv8DBImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.WorldCardv8DBImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnWCXFImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.WcxfImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.WcxfImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.WcxfImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnCSVImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.CsvImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.CsvImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.CsvImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnVCFImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.VcardImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.VcardImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.VcardImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnJpegImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.JpegImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.JpegImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.JpegImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnDrpoboxImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.DropboxImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.DropboxImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.DropboxImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnWCFImport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.WcxfImport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.WcxfImport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.WcxfImport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         #endregion
@@ -690,80 +934,145 @@ namespace PiwikClientTest
         #region Export Buttons
         private void btnDBankExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.DBankExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.DBankExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.DBankExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnOutlookExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.OutlookExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.OutlookExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.OutlookExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnACTExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.ActExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.ActExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.ActExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnLotusExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.LotusNotesExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.LotusNotesExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.LotusNotesExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnSalesforceExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SaleforceExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SaleforceExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SaleforceExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnLeadExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.SaleforceLeadExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.SaleforceLeadExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.SaleforceLeadExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnWCXFExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.WcxfExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.WcxfExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.WcxfExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnExcelExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.ExcelExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.ExcelExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.ExcelExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnCSVExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.CsvExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.CsvExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.CsvExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnVCFExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.VcardExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.VcardExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.VcardExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnJpegExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.JpegExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.JpegExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.JpegExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
 
         private void btnDropboxExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.DropboxExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.DropboxExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.DropboxExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }        
 
         private void btnTxtExport_Click(object sender, RoutedEventArgs e)
         {
-            string url = GenerateURL(PPPiwikClient.RecordType.TxtExport);
-            worker.RunWorkerAsync(url);
+            GenerateURL(PPPiwikClient.RecordType.TxtExport);
+            
+            PPPiwikClient pc = new PPPiwikClient(SiteId, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
+            pc.SendRecordCompleted += MySendCompleted;
+            pc.SetUA(UA);
+            if (!pc.SendRecord(PPPiwikClient.RecordType.TxtExport, tbTitle.Text, localeName))
+                MessageBox.Show(this, "busy...");
         }
         #endregion
 
