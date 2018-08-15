@@ -29,6 +29,8 @@ namespace PiwikClientTest
         private static string AndroidUA = @"Mozilla/5.0 (Linux; Android 8.0; HTC U11)";
         private static string AndroidTabletUA = @"Mozilla/5.0 (Linux; Android 7.1.2; Asus TF701T Tablet) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36";
         private static string WPUA = @"Mozilla/5.0 (Windows Phone 10.0; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Edge/13.1058";
+        private static string SurfaceUA = @"Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; ARM; Trident/6.0; Touch; Microsoft Surface)";
+        private static string XboxUA = "Mozilla/5.0 (Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko)";
 
         private List<string> vCultureNames;
 
@@ -99,6 +101,16 @@ namespace PiwikClientTest
                     UA_String = WPUA;
                     lbDevice.Content = "Microsoft Lumia 950, Windows Phone 10.0";
                     UA_Display_String = "Windows Phone 10.0";
+                    break;
+                case 6:
+                    UA_String = SurfaceUA;
+                    lbDevice.Content = "Microsoft Surface, Windows 10.0";
+                    UA_Display_String = "平板電腦, Windows 10.0";
+                    break;
+                case 7:
+                    UA_String = XboxUA;
+                    lbDevice.Content = "Xbox 主機";
+                    UA_Display_String = "Xbox 主機";
                     break;
             }
         }
