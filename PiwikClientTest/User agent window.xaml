@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PiwikClientTest"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Title="User_agent_window" Height="250" Width="360">
     <Grid>
         <Label Margin="0,10,0,0">裝置：</Label>
@@ -25,6 +26,6 @@
         <Label Margin="0,60,0,0">顯示：</Label>
         <Label Margin="0,80,0,0" Name="lbDevice">普通桌上型電腦</Label>
 
-        <Button Name="btnOK" Width="50" Height="25" Content="OK" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10" Click="btnOK_Click"/>
+        <Button Name="btnOK" Width="50" Height="25" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10" Click="btnOK_Click"/>
     </Grid>
 </Window>
