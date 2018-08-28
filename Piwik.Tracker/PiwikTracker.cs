@@ -186,6 +186,7 @@ namespace Piwik.Tracker
         private long? _lastVisitTs;
         private long? _lastEcommerceOrderTs;
         private bool _sendImageResponse = true;
+        private bool _ignoreSSLWarning = false;
 
         /// <summary>
         /// Builds a PiwikTracker object, used to track visits, pages and Goal conversions
@@ -195,8 +196,9 @@ namespace Piwik.Tracker
         /// </summary>
         /// <param name="idSite">Id site to be tracked</param>
         /// <param name="apiUrl">"http://example.org/piwik/" or "http://piwik.example.org/". If set, will overwrite PiwikTracker.URL</param>
+        /// <param name="ignoreSSLWarning">Ignore SSL warning if using https. Danger!</param>
         /// <exception cref="ArgumentException">apiUrl must not be null or empty</exception>
-        public PiwikTracker(int idSite, string apiUrl)
+        public PiwikTracker(int idSite, string apiUrl, bool ignoreSSLWarning = false)
         {
             if (string.IsNullOrEmpty(apiUrl))
             {
@@ -214,6 +216,7 @@ namespace Piwik.Tracker
             SetNewVisitorId();
             _createTs = _currentTs;
             _visitorCustomVar = GetCustomVariablesFromCookie();
+            _ignoreSSLWarning = ignoreSSLWarning;
         }
 
         /// <summary>
@@ -336,6 +339,19 @@ namespace Piwik.Tracker
         public void SetCustomTrackingParameter(string trackingApiParameter, string value)
         {
             _customParameters[trackingApiParameter] = value;
+        }
+
+        /// <summary>
+        /// Sets a custom tracking parameter
+        /// <para></para>
+        /// To track custom dimensions use 'dimension{#}' as the value for
+        /// <paramref name="trackingApiParameter"/>, e.g. dimension1.
+        /// </summary>
+        /// <param name="trackingApiParameter">The name of the custom tracking parameter. Use dimension{#} for custom dimensions, e.g. dimension1 for dimension 1.</param>
+        /// <param name="value">The value of the custom parameter</param>
+        public void SetCustomDimension(int trackingApiParameter, string value)
+        {
+            _customParameters["dimension" + trackingApiParameter.ToString()] = value;
         }
 
         /// <summary>
@@ -1422,6 +1438,18 @@ namespace Piwik.Tracker
 
         private TrackingResponse SendRequest(string url, string method = "GET", string data = null, bool force = false)
         {
+            // 解決「無法為 SSL/TLS 安全通道建立信任關係。」
+            // This is dangerous!
+            // https://stackoverflow.com/a/6613434/3576052
+            if (_ignoreSSLWarning)
+            {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            }
+            else
+            {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = null;
+            }
+
             // if doing a bulk request, store the url
             if (_doBulkRequests && !force)
             {

@@ -15,12 +15,16 @@ namespace Piwik.Tracker
         private static int SiteId = 1;  //Piwik控制台裡面設定的site id號碼，對應不同產品
         private static readonly int TIMEOUT_SECOUND = 10;
 
+        private static string referrerURL = null;
+
         private string workerException;
         private string uID;
         private string titleString;
         private string applicationName;
         private string versionNumber;
         private string responseString;
+        private int dimentionName;
+        private string dimentionValue;
         private System.Net.HttpStatusCode responseStatusCode;
         //private string localeName;
         //private string searchKey;
@@ -111,12 +115,13 @@ namespace Piwik.Tracker
         /// 基本資料在Constructor時候傳入。之後要傳送一筆資料，只要呼叫它的SendRecord()
         /// </summary>
         /// <param name="siteID">Piwik伺服器網頁上定義的每個網站ID</param>
+        /// <param name="serverURL"></param>
         /// <param name="appName">例如"WorldCardTeam"</param>
         /// <param name="version">例如"v1.0.0"</param>
         /// <param name="userID">辨識獨立的使用者代號</param>
         /// <param name="customWidth">複寫系統螢幕寬度</param>
         /// <param name="customHeight">複寫系統螢幕高度</param>
-        public PPPiwikClient(int siteID, string appName, string version, string userID, int? customWidth = null, int? customHeight = null)
+        public PPPiwikClient(int siteID, string serverURL, string appName, string version, string userID, int? customWidth = null, int? customHeight = null)
         {
             #region 檢查用
             if (string.IsNullOrEmpty(appName))
@@ -126,6 +131,9 @@ namespace Piwik.Tracker
             if (string.IsNullOrEmpty(version))
                 throw new ArgumentNullException(version, "Version must be not null or empty.");
             #endregion
+
+            if (!string.IsNullOrEmpty(serverURL))
+                PiwikBaseUrl = serverURL;
 
             int osMajor = Environment.OSVersion.Version.Major;
             int osMinor = Environment.OSVersion.Version.Minor;
@@ -332,12 +340,17 @@ namespace Piwik.Tracker
                     url += "/Undefined/" + recordType.ToString();
                     break;
             }
-            Console.Write(url);
+            Console.WriteLine(url);
             return url;
         }
 
-        private void GenerateAdditionalProperties(ref PiwikTracker tracker, string appLanguage, string searchKey = null)
+        private void GenerateAdditionalProperties(ref PiwikTracker tracker, string appLanguage, string searchKey = null, int serchResults = 0)
         {
+            // private variables
+            tracker.SetResolution(width, height);
+            tracker.SetUserAgent(UA);
+            if (!string.IsNullOrWhiteSpace(uID))
+                tracker.SetUserId(uID);
             // arguments
             if (!string.IsNullOrEmpty(appLanguage))
             {
@@ -345,12 +358,8 @@ namespace Piwik.Tracker
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                tracker.DoTrackSiteSearch(searchKey);
+                tracker.DoTrackSiteSearch(searchKey, string.Empty, serchResults);
             }
-            // private variables
-            tracker.SetResolution(width, height);
-            tracker.SetUserAgent(UA);
-            tracker.SetUserId(uID);            
             tracker.RequestTimeout = new TimeSpan(0, 0, TIMEOUT_SECOUND);
         }
 
@@ -362,14 +371,19 @@ namespace Piwik.Tracker
         /// <param name="customTitle">可以自訂的標題</param>
         /// <param name="appLanguage">例如"zh-TW"</param>
         /// <param name="searchKey">搜尋關鍵字</param>
+        /// <param name="serchResults">搜尋結果數量</param>
         /// <returns>true=開始傳送 false=忙碌中</returns>
-        public bool SendRecord(RecordType recordType, string customTitle = null, string appLanguage = null, string searchKey = null)
+        public bool SendRecord(RecordType recordType, string customTitle = null, string appLanguage = null, string searchKey = null, int serchResults = 0)
         {
             titleString = customTitle;
             string url = GenerateTrackingURL(recordType);
-            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
-            piwikTracker.SetUrl(url);            
-            GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey);
+            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl, true);
+            piwikTracker.SetUrl(url);
+            if (dimentionName > 0 && !string.IsNullOrWhiteSpace(dimentionValue))
+                piwikTracker.SetCustomDimension(dimentionName, dimentionValue);
+            //piwikTracker.SetUrlReferrer(referrerURL);
+            referrerURL = url;
+            GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey, serchResults);
 
             // send in background
             if (!sendWorker.IsBusy)
@@ -396,8 +410,12 @@ namespace Piwik.Tracker
 
             titleString = customTitle;
             string url = "http://" + applicationName + "/" + versionNumber + "/" + strFreeInput;
-            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
+            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl, true);
             piwikTracker.SetUrl(url);
+            if (dimentionName > 0 && !string.IsNullOrWhiteSpace(dimentionValue))
+                piwikTracker.SetCustomDimension(dimentionName, dimentionValue);
+            //piwikTracker.SetUrlReferrer(referrerURL);
+            referrerURL = url;
             GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey);
 
             // send in background
@@ -426,8 +444,12 @@ namespace Piwik.Tracker
                 throw new ArgumentNullException(eventAction, "Event action cannot be empty.");
 
             string url = GenerateTrackingURL(RecordType.CustomEvent);
-            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl);
+            PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl, true);
             piwikTracker.SetUrl(url);
+            if (dimentionName > 0 && !string.IsNullOrWhiteSpace(dimentionValue))
+                piwikTracker.SetCustomDimension(dimentionName, dimentionValue);
+            //piwikTracker.SetUrlReferrer(referrerURL);
+            referrerURL = url;
             GenerateAdditionalProperties(ref piwikTracker, null);            
 
             // send in background
@@ -445,6 +467,17 @@ namespace Piwik.Tracker
         {
             UA = strUA;
         }
+
+        public void SetDimention(int index, string value)
+        {
+            dimentionName = index;
+            dimentionValue = value;
+        }
+
+        public void ClearUrlReferrer()
+        {
+            referrerURL = null;
+        }
     }
 
     /// <summary>
@@ -452,8 +485,17 @@ namespace Piwik.Tracker
     /// </summary>
     public class SendRecordCompleteEventArgs : EventArgs
     {
+        /// <summary>
+        /// 成功才會有值，不然會是 null
+        /// </summary>
         public string SendResult { get; set; }
+        /// <summary>
+        /// 失敗才會有值，不然會是 null
+        /// </summary>
         public string ExceptionMessage { get; set; }
+        /// <summary>
+        /// 傳送結果的 status code
+        /// </summary>
         public System.Net.HttpStatusCode HttpStatusCode { get; set; }
     }
 }
