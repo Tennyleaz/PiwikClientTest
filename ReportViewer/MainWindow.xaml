@@ -1,0 +1,49 @@
+﻿<Window x:Class="ReportViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReportViewer"
+        mc:Ignorable="d"
+        Title="報告產生" Height="300" Width="500" ResizeMode="NoResize"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Label Margin="20,0,0,0">可用操作列表：</Label>
+        <TextBox Name="tbAdd" Margin="20,20,0,0" Width="100" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name="btnAdd" Margin="120,20,0,0" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Content="┼" Click="btnAdd_Click"/>
+
+        <ListView Name="userDefinedList" Margin="20,50,0,0" Width="100" Height="170" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single"/>
+        <Button Name="btnDelete" Margin="20,230,0,0" Width="100" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Delete" Click="btnDelete_Click"/>
+
+        <Label Margin="160,0,0,0">最愛下限數量：</Label>
+        <TextBox Name="tbFavoriteLimit" Margin="160,20,0,0" Width="90" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Right" PreviewTextInput="tbFavoriteLimit_PreviewTextInput"/>
+
+        <Label Margin="160,45,0,0">平台：</Label>
+        <RadioButton Margin="160,70,0,0" Name="radioAll" GroupName="PlatformGroup" Content="All" IsChecked="True"/>
+        <RadioButton Margin="160,85,0,0" Name="radioWin" GroupName="PlatformGroup" Content="Windows" />
+        <RadioButton Margin="160,100,0,0" Name="radioMac" GroupName="PlatformGroup" Content="Mac" />
+        <RadioButton Margin="160,115,0,0" Name="radioIos" GroupName="PlatformGroup" Content="iOS" />
+
+        <Label Margin="160,140,0,0">專案：</Label>
+        <ComboBox Name="comboProjectList" Margin="160,165,0,0" Width="90" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+        <GroupBox Margin="0,5,20,0" Width="200" Height="230" Header="結果檢視" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <DockPanel LastChildFill="False">
+                <Label Name="lbStart" DockPanel.Dock="Top">開始：</Label>
+                <DatePicker Name="rangeStartDatePicker" Margin="5" Visibility="Collapsed" DockPanel.Dock="Top" FirstDayOfWeek="Monday"/>
+                <Label Name="lbEnd" DockPanel.Dock="Top">結束：</Label>
+                <DatePicker Name="datePicker" Margin="5" DockPanel.Dock="Top" FirstDayOfWeek="Monday"/>
+                
+                <Button Name="btnReport" Content="產生報告" Margin="10" HorizontalAlignment="Center" Click="btnReport_Click" Width="90" DockPanel.Dock="Bottom"/>
+                <ComboBox Name="cbReportDuration" Width="90" Margin="5" SelectionChanged="cbReportDuration_SelectionChanged" DockPanel.Dock="Bottom">
+                    <ComboBoxItem Content="日" IsSelected="True"/>
+                    <ComboBoxItem Content="周"/>
+                    <ComboBoxItem Content="月"/>
+                    <ComboBoxItem Content="年"/>
+                    <ComboBoxItem Content="自訂..."/>
+                </ComboBox>                
+            </DockPanel>
+        </GroupBox>
+        <Label HorizontalAlignment="Right" VerticalAlignment="Bottom" Name="lbBuildNum" Margin="0,0,5,0">版本：</Label>
+    </Grid>
+</Window>
