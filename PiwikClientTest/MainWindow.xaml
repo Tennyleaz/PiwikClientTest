@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PiwikClientTest"
         mc:Ignorable="d"
-        Title="Piwik Test" Height="550" Width="510" Loaded="Window_Loaded">
+        Title="Piwik Test" Height="600" Width="510" Loaded="Window_Loaded">
     
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
@@ -18,29 +18,30 @@
 
     <Grid>
         <Grid.RowDefinitions >
-            <RowDefinition Height="100" />
+            <RowDefinition Height="110" />
             <RowDefinition />            
         </Grid.RowDefinitions>
 
         <Grid Name="versionSelectGrid" Grid.Row="0">
             <Label>名稱：</Label>
-            <ComboBox Name="cbAppName" SelectedValuePath="Content" Width="150" Height="20" Margin="70,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="cbAppName_SelectionChanged">
+            <ComboBox Name="cbAppName" SelectedValuePath="Content" Width="150" Height="20" Margin="70,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="cbAppName_SelectionChanged" IsEnabled="False">
                 <ComboBoxItem Name="cbi1">WorldCardTeam</ComboBoxItem>
-                <ComboBoxItem Name="cbi2">WorldCard8</ComboBoxItem>
+                <ComboBoxItem Name="cbi2">掃譯筆測試</ComboBoxItem>
             </ComboBox>
             
             <Label Margin="0,22,0,0">號碼：</Label>
             <TextBox Name="tbVersionNumber" Width="150" Height="20"  Margin="70,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>            
             
             <Label Margin="0,45,0,0">UID：</Label>
-            <TextBox Name="tbUserID" Width="150" Height="20"  Margin="70,48,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Name="tbUserID" Width="150" Height="20"  Margin="70,48,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Tenny"/>
 
             <Label Margin="0,68,0,0">自訂標題：</Label>
+            <Label Margin="0,83,0,0">用斜線/分隔</Label>
             <TextBox Name="tbTitle" Width="150" Height="20"  Margin="70,72,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
             <Label Margin="250,0,0,0" Height="25" VerticalAlignment="Top">裝置:</Label>
             <Label Name="lbOS" Margin="300,0,0,0">Win 0.0</Label>
-            <Button Name="btnFake" Content="切換裝置" Margin="250,72,0,0" Click="btnFakeDevice_Click"/>
+            <Button Name="btnFake" Content="切換裝置..." Margin="250,72,0,0" Click="btnFakeDevice_Click"/>
 
             <Label Margin="250,22,0,0" Height="25" VerticalAlignment="Top">螢幕：</Label>
             <TextBox Name="tbWidth" Width="60" Height="20"  Margin="300,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput"/>
@@ -50,11 +51,17 @@
             <Label Margin="250,45,0,0" Height="25" VerticalAlignment="Top">Result:</Label>
             <Label Name="lbResult" Margin="300,45,0,0" Height="25" VerticalAlignment="Top">???</Label>
 
-            <ProgressBar Name="progressBar" Margin="250,72,0,0" Width="200" Height="20" IsIndeterminate="True" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden"/>
+            <ComboBox Name="cbServer" Height="20" Margin="350,72,0,0" Width="130" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="cbServer_SelectionChanged">
+                <ComboBoxItem >35.233.143.71</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">10.10.12.39</ComboBoxItem>
+                <ComboBoxItem>matomo.penpower.net</ComboBoxItem>
+            </ComboBox>
+            
+            <ProgressBar Name="progressBar" Margin="250,72,0,0" Width="230" Height="20" IsIndeterminate="True" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden"/>
         </Grid>
         
-        <TabControl Name="tabs" Grid.Row="1">
-            <TabItem Header="一般">
+        <TabControl Name="tabs" Grid.Row="1" SelectedIndex="6">
+            <TabItem Header="一般" IsEnabled="False">
                 <Grid VerticalAlignment="Top">
                     <Button Name="btnUse" Content="啟動" Margin="10,0,0,0" Click="btnUse_Click"/>
                     <Button Name="btnLinkedin" Content="LinkedIn" Margin="10,30,0,0" Click="btnLinkedin_Click"/>
@@ -76,31 +83,18 @@
                     <Button Name="btnSetCategory" Content="變更類別" Margin="110,180,0,0" Click="btnSetCategory_Click"/>
                     <Button Name="btnAddCardCount" Content="新增卡片" Margin="110,210,0,0" Click="btnAddCardCount_Click"/>
                     <Button Name="btnManual" Content="使用手冊" Margin="110,240,0,0" Click="btnManual_Click"/>
-                    <Label Content="關鍵字:" Margin="220,0,0,0"/>
-                    <TextBox Name="tbSearchKey" Height="20" Width="110" Margin="270,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <Button Name="btnSearch" Content="搜尋" Margin="380,0,0,0" Click="btnSearch_Click"/>
+                    <Label Content="關鍵字(必填):" Margin="220,0,0,0"/>
+                    <Label Content="搜尋結果(數字):" Margin="220,30,0,0" PreviewTextInput="tbWidth_PreviewTextInput"/>
+                    <TextBox Name="tbSearchKey" Height="20" Width="110" Margin="310,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBox Name="tbSearchResults" Height="20" Width="110" Margin="310,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Button Name="btnSearch" Content="搜尋" Margin="430,0,0,0" Width="50" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnSearch_Click" Style="{x:Null}"/>
 
-                    <GroupBox Header="Event" Width="260" Height="200" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10, 30">
-                        <Grid>
-                            <Label Content="Event Category:" Margin="0,0,0,0"/>
-                            <TextBox Name="tbEventCategory" Height="20" Width="110" Margin="0,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <Label Content="Event Action:" Margin="120,0,0,0"/>
-                            <TextBox Name="tbEventAction" Height="20" Width="110" Margin="120,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <Label Content="Event Name:" Margin="0,60,0,0"/>
-                            <TextBox Name="tbEventName" Height="20" Width="110" Margin="0,90,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <Label Content="Event Value:" Margin="120,60,0,0"/>
-                            <TextBox Name="tbEventValue" Height="20" Width="110" Margin="120,90,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <Button Name="btnEvent" Content="Send Event" Margin="0,120,0,0" Click="btnEvent_Click"/>
-                        </Grid>    
-                    </GroupBox>
-
-                    <Label Margin="10,330,0,0">隨意輸入！用斜線 / 分隔功能：</Label>
-                    <TextBox Name="tbFreeInput" Height="20" Width="380" Margin="15,350,0,0" HorizontalAlignment="Left"/>
-                    <Button Name="btnFreeInput" Content="送出" Margin="390,350,0,0" Width="60" Click="btnFreeInput_Click" Style="{x:Null}"/>
+                    <GroupBox Header="Event" Width="260" Height="200" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10, 30" Visibility="Hidden">                           
+                    </GroupBox>                    
                 </Grid>
             </TabItem>
-            
-            <TabItem Header="同步" >
+
+            <TabItem Header="同步" IsEnabled="False">
                 <Grid>
                     <Button Name="btnGmailSync" Content="Gmail 同步" Margin="10,0,0,0" Click="btnGmailSync_Click"/>
                     <Button Name="btnNasSync" Content="NAS 同步" Margin="10,30,0,0" Click="btnNasSync_Click"/>
@@ -110,8 +104,8 @@
                     <Button Name="btnSalesforceSync" Content="Salesforce 同步" Margin="10,150,0,0" Click="btnSalesforceSync_Click"/>
                 </Grid>
             </TabItem>
-            
-            <TabItem Header="匯入" >
+
+            <TabItem Header="匯入" IsEnabled="False">
                 <Grid>
                     <Button Name="btnDbankImport" Content="華為網盤匯入" Margin="10,0,0,0" Click="btnDbankImport_Click"/>
                     <Button Name="btnOutlookImport" Content="Outlook匯入" Margin="10,30,0,0" Click="btnOutlookImport_Click"/>
@@ -127,8 +121,8 @@
                     <Button Name="btnWCFImport" Content="WCF匯入" Margin="10,330,0,0" Click="btnWCFImport_Click"/>
                 </Grid>
             </TabItem>
-            
-            <TabItem Header="匯出" >
+
+            <TabItem Header="匯出" IsEnabled="False">
                 <Grid>
                     <Button Name="btnDBankExport" Content="華為網盤匯出" Margin="10,0,0,0" Click="btnDBankExport_Click"/>
                     <Button Name="btnOutlookExport" Content="Outlook匯出" Margin="10,30,0,0" Click="btnOutlookExport_Click"/>
@@ -145,14 +139,127 @@
                     <Button Name="btnTxtExport" Content="Txt匯出" Margin="110,30,0,0" Click="btnTxtExport_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="隨機產生">
+
+            <TabItem Header="隨機產生" IsEnabled="False">
                 <Grid>
                     <Button Name="btnRandom" Content="產生隨機紀錄" Margin="10,0,0,0" Click="btnRandom_Click"/>
                     <Label Content="筆數：" Margin="0,30"/>
-                    <TextBox Name="tbRandom" Height="20" Width="50" Margin="40,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">10</TextBox>
+                    <TextBox Name="tbRandom" Height="20" Width="50" Margin="40,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">5</TextBox>
                     <Label Content="Threads：" Margin="0,60"/>
                     <TextBox Name="tbThreads" Height="20" Width="50" Margin="60,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">3</TextBox>
+
+                    <Button Name="btnRandomFavorite" Content="產生隨機最愛" Margin="10,100,0,0" Click="btnRandomFavorite_Click"/>
                 </Grid>
+            </TabItem>
+
+            <TabItem Header="其他測試">
+                <StackPanel VerticalAlignment="Top">
+                    <Grid>
+                        <Label Margin="10,0,0,0">自訂維度號：</Label>
+                        <Label Margin="10,25,0,0">自訂維度值：</Label>
+                        <TextBox Name="tbDimentionName" Height="20" Width="110" Margin="100,3,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="1" PreviewTextInput="tbWidth_PreviewTextInput"/>
+                        <TextBox Name="tbDimentionValue" Height="20" Width="110" Margin="100,28,0,5" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid Background="AntiqueWhite">
+                        <Label Height="25" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">內容名稱(必填)</Label>
+                        <TextBox Name="tbContentName" Width="120" Height="20" Margin="10,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Height="25" Margin="130,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">內容區塊</Label>
+                        <TextBox Name="tbContentPiece" Width="120" Height="20" Margin="130,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Height="25" Margin="250,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">內容目標</Label>
+                        <TextBox Name="tbContentTarget" Width="120" Height="20" Margin="250,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Button Name="btnTest" Content="測試內容" Margin="380,20,0,10" Click="btnContent_Click" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid >
+                        <Label Height="25" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">料號(必填)</Label>
+                        <TextBox Name="tbSKU2" Width="100" Height="20" Margin="10,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Height="25" Margin="120,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">產品名稱</Label>
+                        <TextBox Name="tbProductName2" Width="110" Height="20" Margin="120,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Height="25" Margin="240,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">類別(用斜線/分隔)</Label>
+                        <TextBox Name="tbProductCate2" Width="110" Height="20" Margin="240,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Height="25" Margin="360,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">單價(必填)</Label>
+                        <TextBox Name="tbPrice2" Width="60" Height="20" Margin="360,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">1</TextBox>
+                        <Label Height="25" Margin="10,40,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">商品網址</Label>
+                        <TextBox Name="tbEcommercePage" Width="360" Height="20" Margin="10,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">http://WorldCardTeam/Product/</TextBox>
+                        <Button Name="btnEcommerceView" Content="瀏覽商品" Margin="380,60,0,10" Click="btnEcommerceView_Click" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid Background="AntiqueWhite">
+                        <Label Height="25" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">料號(必填)</Label>
+                        <TextBox Name="tbSKU" Width="100" Height="20" Margin="10,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Height="25" Margin="120,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">產品名稱</Label>
+                        <TextBox Name="tbProductName" Width="110" Height="20" Margin="120,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Height="25" Margin="240,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">單價(必填)</Label>
+                        <TextBox Name="tbPrice" Width="60" Height="20" Margin="240,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">1</TextBox>
+                        <Label Height="25" Margin="310,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">數量(必填)</Label>
+                        <TextBox Name="tbQuantity" Width="60" Height="20" Margin="310,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewTextInput="tbWidth_PreviewTextInput">1</TextBox>
+                        <Button Name="btnCart" Content="加入購物車" Margin="380,10,0,0" Click="btnCart_Click"  VerticalAlignment="Top"/>
+                        <Button Name="btnEcommerce" Content="購物!" Margin="380,40,0,10" Click="btnEcommerce_Click"  VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid >
+                        <Label Margin="10,0,0,0">隨意輸入！用斜線 / 分隔功能：</Label>
+                        <TextBox Name="tbFreeInput" Height="20" Width="360" Margin="10,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="http://worldcardteam/..."/>
+                        <Button Name="btnFreeInput" Content="送出網址" Margin="380,20,0,10" Width="60" Click="btnFreeInput_Click"/>
+                    </Grid>
+                    <Grid Background="AntiqueWhite">
+                        <Label Content="事件類別(必填)" Margin="10,0,0,0"/>
+                        <Label Content="事件動作(必填)" Margin="130,0,0,0"/>
+                        <Label Content="事件標籤" Margin="250,0,0,0"/>
+                        <Label Content="值(浮點數)" Margin="370,0,0,0"/>
+                        <TextBox Name="tbEventCategory" Height="20" Width="110" Margin="10,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>                        
+                        <TextBox Name="tbEventAction" Height="20" Width="110" Margin="130,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>                        
+                        <TextBox Name="tbEventName" Height="20" Width="110" Margin="250,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>                        
+                        <TextBox Name="tbEventValue" Height="20" Width="110" Margin="370,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Button Name="btnEvent" Content="Send Event" Margin="380,50,0,10" Click="btnEvent_Click"/>
+                    </Grid>                    
+                    <Label Margin="10,0,0,0">沒有寫必填的欄位都可以不填~</Label>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="掃譯筆測試">
+                <DockPanel LastChildFill="False">
+                    <Grid DockPanel.Dock="Top">
+                        <Label Margin="5,0,0,0" Width="60" HorizontalAlignment="Left">From - fr</Label>
+                        <!--<ComboBox Name="cbSourceLanguage" Width="100" HorizontalAlignment="Left" Margin="50,0,0,0"></ComboBox>-->
+                        <Label Margin="70,0,0,0" Width="60" HorizontalAlignment="Left">To - en</Label>
+                        <!--<ComboBox Name="cbDestLanguage" Width="100" HorizontalAlignment="Left" Margin="180,0,0,0"></ComboBox>-->
+                    </Grid>
+                    <Grid DockPanel.Dock="Top" Width="150" HorizontalAlignment="Left">
+                        <Button Name="btnScanText" Margin="5" Click="btnScanText_Click">掃描輸入</Button>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top" Width="150" HorizontalAlignment="Left">
+                        <Button Name="btnTranslate" Margin="5" Click="btnTranslate_Click">整句翻譯</Button>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top" Width="150" HorizontalAlignment="Left">
+                        <Button Name="btnDictionary" Margin="5" Click="btnDictionary_Click">字典</Button>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top" Width="150" HorizontalAlignment="Left">
+                        <Button Name="btnFavoriteScan" Margin="5" Click="btnFavoriteScan_Click" IsEnabled="True">test1</Button>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top" Width="150" HorizontalAlignment="Left">
+                        <Button Name="btnFavoriteTranslate" Margin="5" Click="btnFavoriteTranslate_Click" IsEnabled="False">test2</Button>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top" Width="150" HorizontalAlignment="Left">
+                        <Button Name="btnFavoriteDict" Margin="5" Click="btnFavoriteDict_Click" IsEnabled="False">test3</Button>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top" Width="150" HorizontalAlignment="Left">
+                        <Button Name="btnRandom2" Margin="5" Click="btnRandom2_Click" IsEnabled="True">隨機</Button>
+                    </Grid>
+                    <GroupBox DockPanel.Dock="Right" Margin="0,-200,0,0" Width="200" Header="結果檢視" VerticalAlignment="Top" IsEnabled="False">
+                        <StackPanel>
+                            <Label Name="lbStart">開始：</Label>
+                            <DatePicker Name="rangeStartDatePicker" Margin="5" Visibility="Collapsed"/>
+                            <Label Name="lbEnd">結束：</Label>
+                            <DatePicker Name="datePicker" Margin="5"/>                            
+                            <ComboBox Name="cbReportDuration" Width="90" Margin="5" SelectionChanged="cbReportDuration_SelectionChanged">
+                                <ComboBoxItem Content="日" IsSelected="True"/>
+                                <ComboBoxItem Content="周"/>
+                                <ComboBoxItem Content="月"/>
+                                <ComboBoxItem Content="年"/>
+                                <ComboBoxItem Content="自訂..."/>
+                            </ComboBox>
+                            <Button Name="btnReport" Content="產生報告" HorizontalAlignment="Center" Margin="5" Click="btnReport_Click"/>
+                        </StackPanel>
+                    </GroupBox>
+                </DockPanel>
             </TabItem>
         </TabControl>
     </Grid>

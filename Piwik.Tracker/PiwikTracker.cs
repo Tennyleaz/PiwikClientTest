@@ -935,14 +935,22 @@ namespace Piwik.Tracker
         /// <returns>URL to piwik.php with all parameters set to track the pageview</returns>
         public string GetUrlTrackPageView(string documentTitle = "")
         {
-            var url = GetRequest(IdSite);
-
-            if (!string.IsNullOrWhiteSpace(documentTitle))
+            try
             {
-                url += "&action_name=" + UrlEncode(documentTitle);
-            }
+                var url = GetRequest(IdSite);
 
-            return url;
+                if (!string.IsNullOrWhiteSpace(documentTitle))
+                {
+                    url += "&action_name=" + UrlEncode(documentTitle);
+                }
+
+                return url;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return string.Empty;
+            }
         }
 
         /// <summary>

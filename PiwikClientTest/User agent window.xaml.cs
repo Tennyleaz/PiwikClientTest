@@ -27,7 +27,7 @@ namespace PiwikClientTest
         private static string iPhoneUA = @"Mozilla/5.0 (iPhone 8; CPU iPhone OS 11_2 like Mac OS X)";
         private static string iPadUA = @"Mozilla/5.0 (iPad; CPU OS 11_2 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1";
         private static string AndroidUA = @"Mozilla/5.0 (Linux; Android 8.0; HTC U11)";
-        private static string AndroidTabletUA = @"Mozilla/5.0 (Linux; Android 7.1.2; Asus TF701T Tablet) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36";
+        private static string AndroidTabletUA = @"Mozilla/5.0 (Linux; Android 7.1.2; Asus TF701T Tablet)";
         private static string WPUA = @"Mozilla/5.0 (Windows Phone 10.0; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Edge/13.1058";
         private static string SurfaceUA = @"Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; ARM; Trident/6.0; Touch; Microsoft Surface)";
         private static string XboxUA = "Mozilla/5.0 (Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko)";
