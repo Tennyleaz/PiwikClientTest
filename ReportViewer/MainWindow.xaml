@@ -5,29 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReportViewer"
         mc:Ignorable="d"
-        Title="報告產生" Height="300" Width="500" ResizeMode="NoResize"
+        Title="報告產生" Height="310" Width="550" ResizeMode="NoResize"
         Loaded="Window_Loaded">
     <Grid>
-        <Label Margin="20,0,0,0">可用操作列表：</Label>
-        <TextBox Name="tbAdd" Margin="20,20,0,0" Width="100" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button Name="btnAdd" Margin="120,20,0,0" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Content="┼" Click="btnAdd_Click"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1.2*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
 
-        <ListView Name="userDefinedList" Margin="20,50,0,0" Width="100" Height="170" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single"/>
-        <Button Name="btnDelete" Margin="20,230,0,0" Width="100" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Delete" Click="btnDelete_Click"/>
+        <Grid Grid.Column="1">
+            <Label Margin="20,0,0,0">可用操作列表：</Label>
+            <TextBox Name="tbAdd" Margin="20,20,0,0" Width="110" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Button Name="btnAdd" Margin="130,20,0,0" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Content="┼" Click="btnAdd_Click"/>
 
-        <Label Margin="160,0,0,0">最愛下限數量：</Label>
-        <TextBox Name="tbFavoriteLimit" Margin="160,20,0,0" Width="90" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Right" PreviewTextInput="tbFavoriteLimit_PreviewTextInput"/>
+            <ListView Name="userDefinedList" Margin="20,50,0,0" Width="130" Height="180" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single"/>
+            <Button Name="btnDelete" Margin="20,240,0,0" Width="100" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Delete" Click="btnDelete_Click"/>
+        </Grid>
 
-        <Label Margin="160,45,0,0">平台：</Label>
-        <RadioButton Margin="160,70,0,0" Name="radioAll" GroupName="PlatformGroup" Content="All" IsChecked="True"/>
-        <RadioButton Margin="160,85,0,0" Name="radioWin" GroupName="PlatformGroup" Content="Windows" />
-        <RadioButton Margin="160,100,0,0" Name="radioMac" GroupName="PlatformGroup" Content="Mac" />
-        <RadioButton Margin="160,115,0,0" Name="radioIos" GroupName="PlatformGroup" Content="iOS" />
+        <Grid Grid.Column="0">
+            <Label Margin="20,0,0,0">專案：</Label>
+            <ComboBox Name="comboProjectList" Margin="20,25,0,0" Width="90" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="comboProjectList_SelectionChanged"/>
+            
+            <Label Margin="20,50,0,0">平台：</Label>
+            <RadioButton Margin="20,70,0,0" Name="radioAll" GroupName="PlatformGroup" Content="All" IsChecked="True"/>
+            <RadioButton Margin="20,85,0,0" Name="radioWin" GroupName="PlatformGroup" Content="Windows" />
+            <RadioButton Margin="20,100,0,0" Name="radioMac" GroupName="PlatformGroup" Content="Mac" />
+            <RadioButton Margin="20,115,0,0" Name="radioIos" GroupName="PlatformGroup" Content="iOS" />           
 
-        <Label Margin="160,140,0,0">專案：</Label>
-        <ComboBox Name="comboProjectList" Margin="160,165,0,0" Width="90" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Margin="20,150,0,0">最愛下限數量：</Label>
+            <TextBox Name="tbFavoriteLimit" Margin="20,175,0,0" Width="90" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Right" PreviewTextInput="tbFavoriteLimit_PreviewTextInput"/>
+        </Grid>
 
-        <GroupBox Margin="0,5,20,0" Width="200" Height="230" Header="結果檢視" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <GroupBox Grid.Column="2" Margin="0,5,20,0" Width="180" Height="230" Header="結果檢視" VerticalAlignment="Top" HorizontalAlignment="Right">
             <DockPanel LastChildFill="False">
                 <Label Name="lbStart" DockPanel.Dock="Top">開始：</Label>
                 <DatePicker Name="rangeStartDatePicker" Margin="5" Visibility="Collapsed" DockPanel.Dock="Top" FirstDayOfWeek="Monday"/>
@@ -44,6 +54,6 @@
                 </ComboBox>                
             </DockPanel>
         </GroupBox>
-        <Label HorizontalAlignment="Right" VerticalAlignment="Bottom" Name="lbBuildNum" Margin="0,0,5,0">版本：</Label>
+        <Label Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Name="lbBuildNum" Margin="0,0,5,0">版本：</Label>
     </Grid>
 </Window>

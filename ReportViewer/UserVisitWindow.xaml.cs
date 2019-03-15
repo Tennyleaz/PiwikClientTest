@@ -19,10 +19,15 @@ namespace ReportViewer
     /// UserVisitWindow.xaml 的互動邏輯
     /// </summary>
     public partial class UserVisitWindow : Window
-    {
-        private const int TIMEOUT_MS = 5000;
+    {       
+        // real server
         private const string PiwikServerUrl = @"http://10.10.15.62/index.php?";
         private const string Token = "4791a3edddeb2f8e2161b7f51da27ed4";
+        // test server
+        //private const string PiwikServerUrl = @"http://10.10.15.65/index.php?";
+        //private const string Token = "fe7410d57176a90ff625be68951793a4";
+
+        private const int TIMEOUT_MS = 5000;
         private const string NO_OP = "無有效操作";
         private const string NO_REGION = "無有效地區";
         private const string MIX = "Mix";

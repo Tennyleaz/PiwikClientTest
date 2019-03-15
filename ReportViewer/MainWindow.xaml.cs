@@ -7,15 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Utility;
-using WPSX.Tracker;
 
 namespace ReportViewer
 {
@@ -34,11 +27,6 @@ namespace ReportViewer
             rangeStartDatePicker.SelectedDate = DateTime.Today.AddDays(-1);
             tbFavoriteLimit.Text = "15";
 
-            Array vWPSX = Enum.GetValues(typeof(WPSX_OP));
-            foreach (var wObject in vWPSX)
-            {
-                userDefindedFavorite.Add(wObject.ToString());
-            }
             userDefinedList.ItemsSource = userDefindedFavorite;
             lbBuildNum.Content += Build.Timestamp;
         }
@@ -48,7 +36,7 @@ namespace ReportViewer
             projectNames = Enum.GetValues(typeof(Projects)).Cast<Projects>().ToList();
             comboProjectList.ItemsSource = projectNames;
             comboProjectList.SelectedIndex = 0;
-
+            
             DateTime localDate = Updater.GetLocalBuildDate();
             DateTime remoteDate = Updater.GetRemoteBuildDate();
             if (remoteDate > localDate)
@@ -160,5 +148,96 @@ namespace ReportViewer
             Regex regex = new Regex("[^0-9]"); //regex that matches disallowed text
             return regex.IsMatch(text);
         }
+
+        private void comboProjectList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // 決定不同專案的類別字串
+            userDefindedFavorite.Clear();
+            Projects p = (Projects)comboProjectList.SelectedItem;
+            switch (p)
+            {
+                case Projects.WC8:
+                    foreach (string op in GetWC8FavoriteList())
+                    {
+                        userDefindedFavorite.Add(op);
+                    }
+                    break;
+                case Projects.WCT:
+                    foreach (string wObject in GetWCTFavoriteList())
+                    {
+                        userDefindedFavorite.Add(wObject.ToString());
+                    }
+                    break;
+                case Projects.WDUSB:
+                    foreach (string wObject in GetWDUSBFavoriteList())
+                    {
+                        userDefindedFavorite.Add(wObject.ToString());
+                    }
+                    break;
+                case Projects.WPSX:
+                    foreach (string wObject in GetWPSXFavoriteList())
+                    {
+                        userDefindedFavorite.Add(wObject.ToString());
+                    }
+                    break;                    
+            }
+        }
+
+        #region Generate operatrion list for different projects
+
+        private List<string> GetWC8FavoriteList()
+        {
+            List<string> operations = new List<string>();
+            Array vEnum = Enum.GetValues(typeof(WC8.Tracker.WCR_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            vEnum = Enum.GetValues(typeof(WC8.Tracker.WCR_Import_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            vEnum = Enum.GetValues(typeof(WC8.Tracker.WCR_Export_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            vEnum = Enum.GetValues(typeof(WC8.Tracker.WCR_SYNC_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            return operations;
+        }
+
+        private List<string> GetWCTFavoriteList()
+        {
+            throw new NotImplementedException();
+        }
+
+        private List<string> GetWPSXFavoriteList()
+        {
+            List<string> operations = new List<string>();
+            Array vWPSX = Enum.GetValues(typeof(WPSX.Tracker.WPSX_OP));
+            foreach (var wObject in vWPSX)
+            {
+                operations.Add(wObject.ToString());
+            }
+            return operations;
+        }
+
+        private List<string> GetWDUSBFavoriteList()
+        {
+            List<string> operations = new List<string>();
+            Array vWPSX = Enum.GetValues(typeof(WDUSB.Tracker.WDUSB_OP));
+            foreach (var wObject in vWPSX)
+            {
+                operations.Add(wObject.ToString());
+            }
+            return operations;
+        }
+
+        #endregion
     }
 }
