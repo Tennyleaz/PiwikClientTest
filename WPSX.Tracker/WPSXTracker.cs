@@ -146,6 +146,10 @@ namespace WPSX.Tracker
         /// </summary>
         WebException,
         /// <summary>
+        /// 通常是網路連線問題。Status code 會是 System.Net.Sockets.SocketError
+        /// </summary>
+        SocketException,
+        /// <summary>
         /// 其他例外
         /// </summary>
         OtherException
@@ -435,21 +439,7 @@ namespace WPSX.Tracker
                 }
                 catch (System.Net.WebException ex)
                 {
-                    var response = ex.Response as System.Net.HttpWebResponse;
-                    if (ex.Status == System.Net.WebExceptionStatus.TrustFailure && !_ignoreSSLWarning)
-                    {
-                        // tell user set ignoreSSLWarning to true
-                        result.ExcptionType = TrackerExcptionType.SSLException;
-                        result.StatusCode = (short)response?.StatusCode;
-                        result.Message = "Something wrong with the certificate, try set ignoreSSLWarning to true. ";
-                    }
-                    else
-                    {
-                        // If exception thrown, no status code is provided. We will make one.
-                        result.ExcptionType = TrackerExcptionType.WebException;
-                        result.StatusCode = (short)response?.StatusCode;
-                        result.Message = ex.ToString();
-                    }
+                    result = HandleWebException(ex);
                 }
                 catch (Exception ex)
                 {
@@ -487,21 +477,7 @@ namespace WPSX.Tracker
             }
             catch (System.Net.WebException ex)
             {
-                var response = ex.Response as System.Net.HttpWebResponse;
-                if (ex.Status == System.Net.WebExceptionStatus.TrustFailure && !_ignoreSSLWarning)
-                {
-                    // tell user set ignoreSSLWarning to true
-                    result.ExcptionType = TrackerExcptionType.SSLException;
-                    result.StatusCode = (short)response?.StatusCode;
-                    result.Message = "Something wrong with the certificate, try set ignoreSSLWarning to true. ";
-                }
-                else
-                {
-                    // If exception thrown, no status code is provided. We will make one.
-                    result.ExcptionType = TrackerExcptionType.WebException;
-                    result.StatusCode = (short)response?.StatusCode;
-                    result.Message = ex.ToString();
-                }
+                result = HandleWebException(ex);
             }
             catch (Exception ex)
             {
@@ -577,6 +553,43 @@ namespace WPSX.Tracker
             if (_width > 0 && _height > 0)
                 piwikTracker.SetResolution(_width, _height);
             piwikTracker.RequestTimeout = new TimeSpan(0, 0, TIMEOUT_SECOUND);
+        }
+
+        private TrackerResult HandleWebException(System.Net.WebException ex)
+        {
+            TrackerResult result = new TrackerResult();
+            if (ex.Response is System.Net.HttpWebResponse response)
+            {
+                if (ex.Status == System.Net.WebExceptionStatus.TrustFailure && !_ignoreSSLWarning)
+                {
+                    // tell user set ignoreSSLWarning to true
+                    result.ExcptionType = TrackerExcptionType.SSLException;
+                    result.StatusCode = (short)response.StatusCode;
+                    result.Message = "Something wrong with the certificate, try set ignoreSSLWarning to true. ";
+                }
+                else
+                {
+                    // If exception thrown, no status code is provided. We will make one.
+                    result.ExcptionType = TrackerExcptionType.WebException;
+                    result.StatusCode = (short)response.StatusCode;
+                    result.Message = response.ToString();
+                }
+            }
+            else if (ex.InnerException is System.Net.Sockets.SocketException socketException)
+            {
+                result.ExcptionType = TrackerExcptionType.SocketException;
+                result.Message = socketException.Message;
+                result.StatusCode = (short)socketException.SocketErrorCode;
+            }
+            else
+            {
+                // if no HttpWebResponse, i.e. no internet or server down
+                result.ExcptionType = TrackerExcptionType.WebException;
+                result.Message = ex.ToString();
+                result.StatusCode = 0;
+            }
+
+            return result;
         }
     }
 }
