@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WC8.Tracker", "WC8.Tracker\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WC8.Tester", "WC8.Tester\WC8.Tester.csproj", "{D7C85C3F-FE3B-426F-9C8F-5D4ADEFBBB6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCT.Tracker", "WCT.Tracker\WCT.Tracker.csproj", "{813889B5-C9A5-4978-B4CD-75DE743A3C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -212,6 +214,18 @@ Global
 		{D7C85C3F-FE3B-426F-9C8F-5D4ADEFBBB6F}.Release|x64.Build.0 = Release|Any CPU
 		{D7C85C3F-FE3B-426F-9C8F-5D4ADEFBBB6F}.Release|x86.ActiveCfg = Release|Any CPU
 		{D7C85C3F-FE3B-426F-9C8F-5D4ADEFBBB6F}.Release|x86.Build.0 = Release|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Debug|x64.Build.0 = Debug|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Debug|x86.Build.0 = Debug|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Release|x64.ActiveCfg = Release|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Release|x64.Build.0 = Release|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Release|x86.ActiveCfg = Release|Any CPU
+		{813889B5-C9A5-4978-B4CD-75DE743A3C73}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
