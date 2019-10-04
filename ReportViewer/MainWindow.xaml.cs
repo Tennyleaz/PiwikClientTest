@@ -85,11 +85,25 @@ namespace ReportViewer
 
                 ReportDuration duration = (ReportDuration)cbReportDuration.SelectedIndex;
                 DateTime date = datePicker.SelectedDate.Value;
-                if (cbReportDuration.SelectedIndex == 4)
+
+                if (p == Projects.WC8_Ad_Verify)
+                {
+                    DateTime? startDate = null;
+                    if (cbReportDuration.SelectedIndex == 4) // 自訂日期
+                        startDate = rangeStartDatePicker.SelectedDate.Value;
+                    RegisterVerifyWindow r = new RegisterVerifyWindow(
+                        "10.10.15.62", 3306, "db", "user", "passwd",
+                        duration, date, startDate);
+                    r.Owner = this;
+                    r.ShowDialog();
+                    return;
+                }
+
+                if (cbReportDuration.SelectedIndex == 4)  // 自訂日期
                 {
                     if (rangeStartDatePicker.SelectedDate.Value >= date)
                     {
-                        MessageBox.Show(this, "start date must earlier than end date");
+                        MessageBox.Show(this, "Start date must earlier than end date.");
                         return;
                     }
                     UserVisitWindow uw = new UserVisitWindow(projectID, platform, duration, favoriteLimit, userDefindedFavorite.ToList(), date, rangeStartDatePicker.SelectedDate.Value);
@@ -179,7 +193,24 @@ namespace ReportViewer
                     {
                         userDefindedFavorite.Add(wObject.ToString());
                     }
-                    break;                    
+                    break;
+            }
+
+            if (p == Projects.WC8_Ad_Verify)
+            {
+                operationsGrid.IsEnabled = false;
+                tbFavoriteLimit.IsEnabled = false;
+                //datePicker.IsEnabled = false;
+                //rangeStartDatePicker.IsEnabled = false;
+                //cbReportDuration.IsEnabled = false;
+            }
+            else
+            {
+                operationsGrid.IsEnabled = true;
+                tbFavoriteLimit.IsEnabled = true;
+                //datePicker.IsEnabled = true;
+                //rangeStartDatePicker.IsEnabled = true;
+                //cbReportDuration.IsEnabled = true;
             }
         }
 
@@ -213,7 +244,28 @@ namespace ReportViewer
 
         private List<string> GetWCTFavoriteList()
         {
-            throw new NotImplementedException();
+            List<string> operations = new List<string>();
+            Array vEnum = Enum.GetValues(typeof(WCT.Tracker.WCT_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            vEnum = Enum.GetValues(typeof(WCT.Tracker.WCT_Import_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            vEnum = Enum.GetValues(typeof(WCT.Tracker.WCT_Export_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            vEnum = Enum.GetValues(typeof(WCT.Tracker.WCT_SYNC_OP));
+            foreach (var wObject in vEnum)
+            {
+                operations.Add(wObject.ToString());
+            }
+            return operations;
         }
 
         private List<string> GetWPSXFavoriteList()

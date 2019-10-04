@@ -66,6 +66,15 @@ namespace Utility
                     }
                 }
             }
+            else if (optionalDisplayUserFieldHeaders != null)
+            {
+                colIdx = 1;
+                for (int i = 0; i < optionalDisplayUserFieldHeaders.Count; i++)
+                {
+                    sheet.Cell(1, colIdx).Value = optionalDisplayUserFieldHeaders[i];
+                    colIdx++;
+                }
+            }
             //資料起始列位置
             int rowIdx = 2;
             foreach (var item in data)

@@ -71,8 +71,11 @@ namespace Utility
     {
         WPSX = 1,
         WCT = 2,
-        WDUSB = 4
+        WDUSB = 4,
+        WC8 = 6,
+        WC8_Ad_Verify = 0
     }
+
 
     #region objects for json parsing
 
