@@ -30,7 +30,9 @@ namespace WC8.Tracker
         FindDuplicate,
         FindTheSameName,
         AD,
-        Search
+        Search,
+        AdvanceSearch,
+        ScanInEditView
     }
 
     public enum WCR_Import_OP
@@ -358,7 +360,7 @@ namespace WC8.Tracker
                     return result;
                 }
 
-                string url = "http://" + _appName + "/Windows/" + _version + "/Ad/" + moduleName;
+                string url = "http://" + _appName + "/Windows/" + _version + "/Ad/" + moduleName + @"?pk_campaign=" + moduleName;
                 result = DoTrackPage(url);
             }
             else

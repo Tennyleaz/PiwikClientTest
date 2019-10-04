@@ -22,7 +22,7 @@ namespace WC8.Tester
             if (tracker.CheckServerStatus().ExcptionType == TrackerExcptionType.Success)
             {
                 Console.WriteLine("send AD...");
-                PrintResult(tracker.SendOperation(WCR_OP.AD));
+                PrintResult(tracker.SendAdView("Scan Wizard"));
 
                 Console.WriteLine("send SalesforceSync...");
                 PrintResult(tracker.SendOperation(WCR_SYNC_OP.SalesforceSync));
@@ -43,6 +43,9 @@ namespace WC8.Tester
                 Console.WriteLine("send AddCard...");
                 PrintResult(tracker.SendOperation(WCR_OP.AddCard));
                 PrintResult(tracker.SendAddCardCountEvent(ADD_CARD_SOURCE.ScanADF, 10));
+
+                Console.WriteLine("send error report...");
+                PrintResult(tracker.SendErrorLog("MainWindow", "LL_SERIOUS_ERROR/exception at some point?", "Additional Error Title"));
             }
             else
                 Console.WriteLine("CheckServerStatus failed!");
