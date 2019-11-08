@@ -32,6 +32,14 @@ namespace Utility
             //使用 reflection 將物件屬性取出當作工作表欄位名稱
             foreach (var item in typeof(T).GetProperties())
             {
+                // 處理DisplayUserAction狀況，略過第一個bool
+                if (typeof(T) == typeof(DisplayUserAction) && item.PropertyType == typeof(bool))
+                    continue;
+
+                // datetime 寬度要拉長
+                if (item.PropertyType == typeof(DateTime))
+                    sheet.Column(colIdx).Width = 14;
+
                 #region - 可以使用 DescriptionAttribute 設定，找不到 DescriptionAttribute 時改用屬性名稱 -
                 //可以使用 DescriptionAttribute 設定，找不到 DescriptionAttribute 時改用屬性名稱
                 DescriptionAttribute description = item.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
@@ -42,9 +50,12 @@ namespace Utility
                 }
                 sheet.Cell(1, colIdx++).Value = item.Name;
                 #endregion
+
                 #region - 直接使用物件屬性名稱 -
+
                 //或是直接使用物件屬性名稱
                 //sheet.Cell(1, colIdx++).Value = item.Name;
+
                 #endregion
 
             }
@@ -72,6 +83,7 @@ namespace Utility
                 for (int i = 0; i < optionalDisplayUserFieldHeaders.Count; i++)
                 {
                     sheet.Cell(1, colIdx).Value = optionalDisplayUserFieldHeaders[i];
+                    sheet.Column(colIdx).Width = (optionalDisplayUserFieldHeaders[i].Length + 1) * 2;
                     colIdx++;
                 }
             }
@@ -81,17 +93,23 @@ namespace Utility
             {
                 //每筆資料欄位起始位置
                 int conlumnIndex = 1;
-                foreach (var jtem in item.GetType().GetProperties())
+                var properties = item.GetType().GetProperties();
+                for (int i=0; i<properties.Length; i++)
                 {
+                    // 處理DisplayUserAction狀況
+                    if (item is DisplayUserAction)
+                        if (i == 0)
+                            continue;
+
                     //將資料內容加上 "'" 避免受到 excel 預設格式影響，並依 row 及 column 填入
-                    sheet.Cell(rowIdx, conlumnIndex).Value = Convert.ToString(jtem.GetValue(item, null));//string.Concat("'", Convert.ToString(jtem.GetValue(item, null)));
+                        sheet.Cell(rowIdx, conlumnIndex).Value = Convert.ToString(properties[i].GetValue(item, null));//string.Concat("'", Convert.ToString(jtem.GetValue(item, null)));
                     conlumnIndex++;
                 }
-                // 處理DisplayUser狀況
+                
                 if (optionalDisplayUserFieldCount > 0)
                 {
-                    DisplayUser du = item as DisplayUser;
-                    if (du != null && du.usageNumberArray != null)
+                    // 處理DisplayUser狀況
+                    if (item is DisplayUser du && du.usageNumberArray != null)
                     {
                         conlumnIndex--;  // 覆蓋"操作"一欄
                         for (int i = 0; i < optionalDisplayUserFieldCount; i++)

@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -113,6 +114,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BuildTimestamp.cs" />
+    <Compile Include="ErrorIdWindow.xaml.cs">
+      <DependentUpon>ErrorIdWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RegisterVerifyWindow.xaml.cs">
       <DependentUpon>RegisterVerifyWindow.xaml</DependentUpon>
     </Compile>
@@ -122,6 +126,10 @@
     <Compile Include="UserVisitWindow.xaml.cs">
       <DependentUpon>UserVisitWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="ErrorIdWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

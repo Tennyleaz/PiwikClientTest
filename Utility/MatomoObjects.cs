@@ -24,6 +24,16 @@ namespace Utility
         public int[] usageNumberArray { get; set; }        
     }
 
+    public class DisplayUserAction
+    {
+        public bool IsError { get; set; }
+        public string Version { get; set; }
+        [Description("事件")]
+        public string url { get; set; }
+        [Description("時間")]
+        public DateTime time { get; set; }
+    }
+
     /// <summary>
     /// View model to show on UI listview
     /// </summary>
@@ -62,6 +72,7 @@ namespace Utility
     public enum Platform
     {
         All,
+        Android,
         IOS,
         Mac,
         Win
@@ -73,7 +84,8 @@ namespace Utility
         WCT = 2,
         WDUSB = 4,
         WC8 = 6,
-        WC8_Ad_Verify = 0
+        WC8_Ad_Verify = 0,
+        View_WC8_Error = -1
     }
 
 

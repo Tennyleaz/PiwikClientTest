@@ -16,11 +16,28 @@ namespace ReportViewer
             
         }
 
+        [Obsolete("use InitWithKey()", true)]
         public bool Init(string host)
         {
             try
             {
                 _sshClient = new SshClient(host, "webmaster", "penpower");
+                _sshClient.Connect();
+                if (_sshClient.IsConnected)
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            return false;
+        }
+
+        public bool InitWithKey(string host)
+        {
+            try
+            {
+                _sshClient = new SshClient(host, "webmaster", new PrivateKeyFile("key.txt", "penpower"));
                 _sshClient.Connect();
                 if (_sshClient.IsConnected)
                     return true;
