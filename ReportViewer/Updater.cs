@@ -9,7 +9,7 @@ namespace ReportViewer
 {
     class Updater
     {
-        private static readonly string REMOTE_FILE = @"\\10.10.10.3\Share\Tenny\Piwik Testing\Test App\build.txt";
+        private static readonly string REMOTE_FILE = @"\\10.10.10.3\Share\Tenny\Piwik-Matomo 文件與工具\Matomo 報告產生工具\build.txt";
 
         public static DateTime GetLocalBuildDate()
         {

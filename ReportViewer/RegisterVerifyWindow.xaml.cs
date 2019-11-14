@@ -20,8 +20,8 @@ namespace ReportViewer
         private List<VerifyLog> logs = new List<VerifyLog>();
         private readonly string connStr;
         //private DateTime rangeStartDate;
-        private DateTime firstDayOfWeek;
-        private DateTime timeLimit;
+        private readonly DateTime startTime;
+        private readonly DateTime timeLimit;
 
         public RegisterVerifyWindow(string server, int port, string name, string user, string password, ReportDuration duration, DateTime endDate, DateTime? startDate = null)
         {
@@ -29,9 +29,9 @@ namespace ReportViewer
             if (duration == ReportDuration.range)
             {
                 if (startDate == null)
-                    throw new ArgumentException("neead a start date of range duration", "startDate");
+                    throw new ArgumentException("neead a start date of range duration", nameof(startDate));
                 if (startDate >= endDate)
-                    throw new ArgumentOutOfRangeException("startDate", "start date must earlier than end date");
+                    throw new ArgumentOutOfRangeException(nameof(startDate), "start date must earlier than end date");
             }
 
             InitializeComponent();
@@ -41,35 +41,35 @@ namespace ReportViewer
             switch (duration)
             {
                 case ReportDuration.day:
-                    firstDayOfWeek = endDate;
-                    timeLimit = endDate.AddDays(1);
+                    startTime = endDate;
+                    timeLimit = endDate.AddDays(1);  // 一日包含今天，不含明天
                     viewPeriod = " 一日內的檢視";
-                    lbConditions.Content = firstDayOfWeek.ToString("yyyy MMMM dd") + viewPeriod;
+                    lbConditions.Content = startTime.ToString("yyyy MMMM dd") + viewPeriod;
                     break;
                 case ReportDuration.week:
                     DayOfWeek dayOfWeek = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(endDate);
-                    firstDayOfWeek = endDate.AddDays(-(int) dayOfWeek);
+                    startTime = endDate.AddDays(-(int) dayOfWeek);
                     timeLimit = endDate.AddDays(7 - (int) dayOfWeek);
                     viewPeriod = " 起一周間的檢視";
-                    lbConditions.Content = firstDayOfWeek.ToString("yyyy MMMM dd") + viewPeriod;
+                    lbConditions.Content = startTime.ToString("yyyy MMMM dd") + viewPeriod;
                     break;
                 case ReportDuration.month:
-                    firstDayOfWeek = new DateTime(endDate.Year, endDate.Month, 1);
+                    startTime = new DateTime(endDate.Year, endDate.Month, 1);
                     int daysThisMonth = DateTime.DaysInMonth(endDate.Year, endDate.Month);
-                    timeLimit = firstDayOfWeek.AddDays(daysThisMonth);
+                    timeLimit = startTime.AddDays(daysThisMonth);
                     viewPeriod = " 起一月間的檢視";
-                    lbConditions.Content = firstDayOfWeek.ToString("yyyy MMMM dd") + viewPeriod;
+                    lbConditions.Content = startTime.ToString("yyyy MMMM dd") + viewPeriod;
                     break;
                 case ReportDuration.year:
-                    firstDayOfWeek = new DateTime(endDate.Year, 1, 1);
+                    startTime = new DateTime(endDate.Year, 1, 1);
                     timeLimit = new DateTime(endDate.Year + 1, 1, 1).AddDays(-1);
                     viewPeriod = " 起一年間的檢視";
-                    lbConditions.Content = firstDayOfWeek.ToString("yyyy MMMM dd") + viewPeriod;
+                    lbConditions.Content = startTime.ToString("yyyy MMMM dd") + viewPeriod;
                     break;
                 case ReportDuration.range:
-                    firstDayOfWeek = startDate.Value;
+                    startTime = startDate.Value;
                     timeLimit = endDate;
-                    lbConditions.Content = " 自訂檢視 " + firstDayOfWeek + " ~ " + timeLimit;
+                    lbConditions.Content = " 自訂檢視 " + startTime + " ~ " + timeLimit;
                     break;
             }
         }
@@ -97,6 +97,7 @@ namespace ReportViewer
             {
                 logListView.Visibility = Visibility.Visible;
                 logListView.ItemsSource = logs;
+                btnSaveExcel.IsEnabled = true;
             }
             else
                 logOutput.Text += "期間內找不到任何資料。";
@@ -139,7 +140,7 @@ namespace ReportViewer
 
                 if (timeLimit > thisMonth)
                 {
-                    worker.ReportProgress(0, "Generating this month's log...\n");
+                    worker.ReportProgress(0, "Generating this month's log... (this may take some time)\n");
                     // 本月的報告還沒彙整，先做成臨時表格
                     string thisMonthTempTable = $"temp_{thisMonth.Year}_{thisMonth.Month.ToString("D2")}";
                     string sqlTemp = GenerateTempTableSQL(thisMonth, thisMonthTempTable);
@@ -148,6 +149,7 @@ namespace ReportViewer
 
                     // 記得加上本月臨時表格
                     sql += " union select * from " + thisMonthTempTable;
+                    System.Threading.Thread.Sleep(1000);
                 }
 
                 // 如果有剩下沒產生的月份，產生永久表格
@@ -234,7 +236,7 @@ namespace ReportViewer
 
             for (int i=logs.Count-1; i>=0; i--)
             {
-                if (logs[i].registeredTime > timeLimit || logs[i].registeredTime < firstDayOfWeek)
+                if (logs[i].registeredTime > timeLimit || logs[i].registeredTime < startTime)
                     logs.RemoveAt(i);
             }
 
@@ -295,7 +297,7 @@ CREATE TEMPORARY TABLE IF NOT EXISTS {tempTableName} as
                 ExcelHelper helper = new ExcelHelper();
 
                 //取得轉為 xlsx 的物件
-                List<string> headers = new List<string> { "Site", "Site ID", "Visit ID", "IP", "國家代碼", "當日首個廣告行為", "註冊完成時間", "首次點廣告時間" };
+                List<string> headers = new List<string> { "Site", "SiteID", "VisitID", "IP", "國家代碼", "當日首個廣告行為", "註冊完成的時間", "首次點廣告時間" };
                 ClosedXML.Excel.XLWorkbook xlsx = helper.Export(logs.ToList(), headers);
 
                 //存檔至指定位置
