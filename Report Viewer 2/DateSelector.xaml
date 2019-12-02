@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Report_Viewer_2.DateSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             Background="White"
+             mc:Ignorable="d" 
+             MinWidth="120" MinHeight="200"
+             d:DesignHeight="400" d:DesignWidth="120">
+    <DockPanel LastChildFill="False">
+        <TextBlock DockPanel.Dock="Top" Style="{StaticResource Heading2}">週期</TextBlock>
+        <ComboBox Name="cbReportDuration" Width="90" Margin="5" SelectionChanged="cbReportDuration_SelectionChanged" DockPanel.Dock="Top">
+            <ComboBoxItem Content="日"/>
+            <ComboBoxItem Content="周"/>
+            <ComboBoxItem Content="月"/>
+            <ComboBoxItem Content="年"/>
+            <ComboBoxItem Content="自訂..."/>
+        </ComboBox>
+
+        <Label Name="lbStart" DockPanel.Dock="Top">開始：</Label>
+        <DatePicker Name="rangeStartDatePicker" Margin="5" Visibility="Collapsed" DockPanel.Dock="Top" FirstDayOfWeek="Monday" Width="110"/>
+        <Label Name="lbEnd" DockPanel.Dock="Top">結束：</Label>
+        <DatePicker Name="datePicker" Margin="5" DockPanel.Dock="Top" FirstDayOfWeek="Monday" Width="110"/>
+
+        <!--<Button Name="btnReport" Content="產生報告" Margin="10" HorizontalAlignment="Center" Click="btnReport_Click" Width="90" Height="25" DockPanel.Dock="Bottom"/>-->
+    </DockPanel>
+</UserControl>

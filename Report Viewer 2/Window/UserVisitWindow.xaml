@@ -1,0 +1,104 @@
+﻿<mui:ModernWindow x:Class="Report_Viewer_2.Window.UserVisitWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                  xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+                  xmlns:utility="clr-namespace:Utility;assembly=Utility"
+                  mc:Ignorable="d" 
+                  Height="600" Width="1024" MinHeight="450" MinWidth="800"
+                  Title="計算最愛" Loaded="Window_Loaded" Closing="UserVisitWindow_OnClosing"
+                  Style="{StaticResource BlankWindow}">
+    <mui:ModernWindow.Resources>
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+    </mui:ModernWindow.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Name="lbConditions" Grid.Row="0" Margin="12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <Button Name="btnSwitchView" Grid.Row="0" Content="切換 地區/使用者 檢視" Padding="5" Margin="0,0,80,0" HorizontalAlignment="Right" Click="btnSwitchView_Click"/>
+        <Button Name="btnSaveExcel" Grid.Row="0" Content="儲存至Excel" Padding="5" HorizontalAlignment="Right" Click="btnSaveExcel_Click"/>
+
+        <ProgressBar Name="progressBar" Grid.Row="0" Visibility="Collapsed"/>
+        <Label Name="progressText" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+
+        <ListView Grid.Row="1" Name="userListView" utility:GridViewSort.AutoSort="True" Visibility="Visible">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=name}" 
+                                    Header="User Name" Width="100" utility:GridViewSort.PropertyName="name"/>
+
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=id}" 
+                                    Header="User ID" Width="130" utility:GridViewSort.PropertyName="id"/>
+
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=favoriteUrl}" 
+                                    Header="Favorite" Width="300" utility:GridViewSort.PropertyName="favoriteUrl"/>
+
+                    <GridViewColumn Header="Count" Width="50" utility:GridViewSort.PropertyName="nb_visits">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding nb_visits}" TextAlignment="Right"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=country}" 
+                                    Header="Country" Width="130" utility:GridViewSort.PropertyName="country"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Grid Name="gridRegion" Grid.Row="1" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListView Name="regionListView" utility:GridViewSort.AutoSort="True" Grid.Column="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=region}" 
+                                    Header="Region" Width="55" utility:GridViewSort.PropertyName="region"/>
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=favoriteUrl}" 
+                                    Header="Favorite" Width="210" utility:GridViewSort.PropertyName="favoriteUrl"/>
+
+                        <GridViewColumn Header="Favorite Count" Width="100" utility:GridViewSort.PropertyName="nb_visits">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding nb_visits}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <ListView Name="countryListView" utility:GridViewSort.AutoSort="True" Grid.Column="1">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=country}" 
+                                    Header="Country" Width="100" utility:GridViewSort.PropertyName="country"/>
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=favoriteUrl}" 
+                                    Header="Favorite" Width="160" utility:GridViewSort.PropertyName="favoriteUrl"/>
+
+                        <GridViewColumn Header="Favorite Count" Width="100" utility:GridViewSort.PropertyName="nb_visits">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding nb_visits}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</mui:ModernWindow>

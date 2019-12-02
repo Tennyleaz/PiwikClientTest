@@ -1,0 +1,30 @@
+﻿<mui:ModernWindow x:Class="Report_Viewer_2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        Title="報告產生" IsTitleVisible="True"
+        MinWidth="800" MinHeight="500"
+        ContentSource="/Pages/Home.xaml">
+    <mui:ModernWindow.MenuLinkGroups>
+        <mui:LinkGroup DisplayName="Welcome">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Home" Source="/Pages/Home.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="操作追蹤" >
+            <mui:LinkGroup.Links>
+                <mui:Link Source="/Pages/ErrorLogPage.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="計算最愛" >
+            <mui:LinkGroup.Links>
+                <mui:Link Source="/Pages/FavoritePage.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="廣告到達" >
+            <mui:LinkGroup.Links>
+                <mui:Link Source="/Pages/AdHitPage.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+    </mui:ModernWindow.MenuLinkGroups>
+</mui:ModernWindow>

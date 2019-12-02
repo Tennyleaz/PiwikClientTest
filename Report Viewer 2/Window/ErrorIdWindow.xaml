@@ -1,0 +1,61 @@
+﻿<mui:ModernWindow x:Class="Report_Viewer_2.Window.ErrorIdWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                  xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+                  xmlns:utility="clr-namespace:Utility;assembly=Utility"
+                  mc:Ignorable="d" 
+                  Height="600" Width="1024" MinHeight="450" MinWidth="800"
+                  Title="Error Id Search"
+                  WindowStartupLocation="CenterOwner" Loaded="ErrorIdWindow_OnLoaded" Closing="ErrorIdWindow_OnClosing"
+                  Style="{StaticResource BlankWindow}">
+    <mui:ModernWindow.Resources>
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+    </mui:ModernWindow.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Name="lbConditions"/>
+        <Button Grid.Row="0" Name="btnSaveExcel" Content="儲存至 Excel" HorizontalAlignment="Right" Visibility="Hidden" Click="btnSaveExcel_Click"/>
+        
+        <TextBlock Grid.Row="1" Name="userText"/>
+
+        <ProgressBar Name="progressBar" Grid.Row="2" Visibility="Collapsed" Height="20" Margin="20,0,20,0" IsIndeterminate="True"/>
+
+        <TextBlock Grid.Row="2" Name="logOutput"/>
+        <ListView Grid.Row="2" Name="userListView" utility:GridViewSort.AutoSort="True" Visibility="Collapsed">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Version}"
+                                    Header="Version" Width="60" utility:GridViewSort.PropertyName="Version"/>
+
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Module}"
+                                    Header="Module" Width="100" utility:GridViewSort.PropertyName="Module"/>
+
+                    <GridViewColumn Header="Action/Error" Width="650" utility:GridViewSort.PropertyName="url">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Name="tb"  Text="{Binding Path=url, TargetNullValue='No Url Found'}"/>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsError}" Value="True">
+                                        <Setter Property="TextBlock.Foreground" Value="Red"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=time, StringFormat='yyyy-MM-dd HH:mm:ss'}" 
+                                    Header="Visit Time" Width="150" utility:GridViewSort.PropertyName="time"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</mui:ModernWindow>
