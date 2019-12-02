@@ -149,7 +149,7 @@ namespace ReportViewer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             rManager = new RemoteManager();
-            if (rManager.Init("10.10.15.62"))
+            if (rManager.InitWithKey("10.10.15.62"))
                 rManager.RaiseActionDisplayLimit(1500);
             else
                 MessageBox.Show("Could not login to remote server.");

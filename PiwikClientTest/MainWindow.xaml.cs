@@ -34,7 +34,7 @@ namespace PiwikClientTest
         /// https://www.whatismybrowser.com/developers/guides/unknown-user-agent-fragments
         /// 
         private string UA;// = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
-        private static readonly string LocalUrl = "http://10.10.12.38";
+        private static readonly string LocalUrl = "http://10.10.15.65";
         private static readonly string GCPUrl = "https://35.233.143.71";
         private static readonly string RealUrl = "http://matomo.penpower.net";
         private static int SiteId = 1;  //Piwik控制台裡面設定的site id號碼，對應不同產品
@@ -132,7 +132,7 @@ namespace PiwikClientTest
             tbHeight.Text = SystemParameters.PrimaryScreenHeight.ToString();
 
             PiwikBaseUrl = GCPUrl;
-            this.Title = "Test app (" + PiwikBaseUrl + ")";
+            //this.Title = "Test app (" + PiwikBaseUrl + ")";
 
             datePicker.SelectedDate = DateTime.Today;
             rangeStartDatePicker.SelectedDate = DateTime.Today.AddDays(-1);

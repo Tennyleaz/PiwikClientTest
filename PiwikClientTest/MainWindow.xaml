@@ -53,7 +53,7 @@
 
             <ComboBox Name="cbServer" Height="20" Margin="350,72,0,0" Width="130" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="cbServer_SelectionChanged">
                 <ComboBoxItem >35.233.143.71</ComboBoxItem>
-                <ComboBoxItem IsSelected="True">10.10.12.39</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">10.10.15.65</ComboBoxItem>
                 <ComboBoxItem>matomo.penpower.net</ComboBoxItem>
             </ComboBox>
             

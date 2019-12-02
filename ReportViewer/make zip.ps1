@@ -10,8 +10,10 @@ mkdir $folderName
 write-host Copying files...
 [string]$binDirDll = $PSScriptRoot + "\bin\Debug\*.dll";
 [string]$binDirExe = $PSScriptRoot + "\bin\Debug\ReportViewer.exe";
+[string]$binDirKey = $PSScriptRoot + "\bin\Debug\key.txt";
 Copy-Item $binDirDll -Destination $folderName
 Copy-Item $binDirExe -Destination $folderName
+Copy-Item $binDirKey -Destination $folderName
 
 write-host Make zip archive...
 [string]$archiveFile = $currentDir + "\ReportViewer " + $today + ".zip"
