@@ -38,7 +38,7 @@ namespace Utility
 
                 // datetime 寬度要拉長
                 if (item.PropertyType == typeof(DateTime))
-                    sheet.Column(colIdx).Width = 14;
+                    sheet.Column(colIdx).Width = 16;
 
                 #region - 可以使用 DescriptionAttribute 設定，找不到 DescriptionAttribute 時改用屬性名稱 -
                 //可以使用 DescriptionAttribute 設定，找不到 DescriptionAttribute 時改用屬性名稱

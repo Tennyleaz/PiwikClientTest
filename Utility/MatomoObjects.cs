@@ -24,10 +24,15 @@ namespace Utility
         public int[] usageNumberArray { get; set; }        
     }
 
+    /// <summary>
+    /// Class of a action from single WC8 user.
+    /// </summary>
     public class DisplayUserAction
     {
         public bool IsError { get; set; }
         public string Version { get; set; }
+        [Description("模組")]
+        public string Module { get; set; }
         [Description("事件")]
         public string url { get; set; }
         [Description("時間")]
@@ -84,8 +89,8 @@ namespace Utility
         WCT = 2,
         WDUSB = 4,
         WC8 = 6,
-        WC8_Ad_Verify = 0,
-        View_WC8_Error = -1
+        //WC8_Ad_Verify = 0,
+        //View_WC8_Error = -1
     }
 
 
@@ -125,6 +130,10 @@ namespace Utility
         public string idVisit;
         public string visitIp;
         public string visitorId;
+        public string country;
+        public string operatingSystem;
+        public string language;
+        public string resolution;
         public long firstActionTimestamp;
         public List<ActionDetail> actionDetails;
     }
@@ -139,6 +148,9 @@ namespace Utility
         public string pageId;
         public string timeSpent;
         public long timestamp;
+        public string eventCategory;
+        public string eventAction;
+        public int eventValue;
     }
 
     public class Page
