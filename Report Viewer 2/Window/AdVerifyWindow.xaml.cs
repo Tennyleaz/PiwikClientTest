@@ -34,7 +34,7 @@ namespace Report_Viewer_2.Window
             }
 
             InitializeComponent();
-            connStr = $"server={server};user={user};database={name};port={port};password={password};Connection Timeout=300";
+            connStr = $"server={server};user={user};database={name};port={port};password={password};default command timeout=120;";
 
             string viewPeriod;
             switch (duration)
@@ -146,7 +146,7 @@ namespace Report_Viewer_2.Window
 
                 if (timeLimit > thisMonth)
                 {
-                    worker.ReportProgress(0, "Generating this month's log... (this may take some time)\n");
+                    worker.ReportProgress(0, "Generating this month's log... (this may take some minutes)\n");
                     // 本月的報告還沒彙整，先做成臨時表格
                     string thisMonthTempTable = $"temp_{thisMonth.Year}_{thisMonth.Month.ToString("D2")}";
                     string sqlTemp = GenerateTempTableSQL(thisMonth, thisMonthTempTable);
