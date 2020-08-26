@@ -298,12 +298,15 @@ namespace WC8.Tracker
             return result;
         }
 
-        public TrackerResult SendAddCardCountEvent(ADD_CARD_SOURCE source, int count)
+        /// <summary>
+        /// 追蹤"新增卡片"的Event。包含名片張數\來源\掃描器(optional)等
+        /// </summary>
+        public TrackerResult SendAddCardCountEvent(ADD_CARD_SOURCE source, int count, string sourceName = null)
         {
             TrackerResult result = new TrackerResult();
             if (_excptionType != TrackerExcptionType.ArgumentExcption)
             {
-                result = SendEvent("新增卡片", source.ToString(), null, count.ToString());
+                result = SendEvent("新增卡片", source.ToString(), sourceName, count.ToString());
             }
             else
             {

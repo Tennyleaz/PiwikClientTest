@@ -42,7 +42,7 @@ namespace WC8.Tester
 
                 Console.WriteLine("send AddCard...");
                 PrintResult(tracker.SendOperation(WCR_OP.AddCard));
-                PrintResult(tracker.SendAddCardCountEvent(ADD_CARD_SOURCE.ScanADF, 10));
+                PrintResult(tracker.SendAddCardCountEvent(ADD_CARD_SOURCE.ScanADF, 10, "AV176U"));
 
                 Console.WriteLine("send error report...");
                 PrintResult(tracker.SendErrorLog("MainWindow", "LL_SERIOUS_ERROR/exception at some point?", "Additional Error Title"));

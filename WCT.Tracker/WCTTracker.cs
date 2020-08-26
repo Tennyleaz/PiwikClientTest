@@ -8,7 +8,9 @@ namespace WCT.Tracker
     public enum WCT_OP
     {
         Launch,
+        LaunchOEM,
         LaunchDaily,
+        LaunchDailyOEM,
         Manual,
         ImageView,
         CompanyView,
@@ -35,7 +37,8 @@ namespace WCT.Tracker
         Share,
         Download,
         SendSecretary,
-        ReDownload
+        ReDownload,
+        RegisterTrial
     }
 
     public enum WCT_Import_OP
@@ -70,7 +73,8 @@ namespace WCT.Tracker
         CsvExport,
         VcardExport,
         JpegExport,
-        TxtExport
+        TxtExport,
+        MsExchangeExport
     }
 
     public enum WCT_SYNC_OP
@@ -86,7 +90,8 @@ namespace WCT.Tracker
         ManualAdd,
         SameCompany,
         EmailSignature,
-        Import
+        Import,
+        AvisionBM
     }
 
     /// <summary>
@@ -299,12 +304,15 @@ namespace WCT.Tracker
             return result;
         }
 
-        public TrackerResult SendAddCardCountEvent(ADD_CARD_SOURCE source, int count)
+        /// <summary>
+        /// 追蹤"新增卡片"的Event。包含名片張數\來源\掃描器(optional)等
+        /// </summary>
+        public TrackerResult SendAddCardCountEvent(ADD_CARD_SOURCE source, int count, string sourceName = null)
         {
             TrackerResult result = new TrackerResult();
             if (_excptionType != TrackerExcptionType.ArgumentExcption)
             {
-                result = SendEvent("新增卡片", source.ToString(), null, count.ToString());
+                result = SendEvent("新增卡片", source.ToString(), sourceName, count.ToString());
             }
             else
             {
