@@ -117,7 +117,7 @@ namespace Piwik.Tracker
 	    private const string DefaultCharsetParameterValues = "utf-8";
 
         /// <summary>
-        /// <see cref="Http://developer.piwik.org/api-reference/tracking-javascript"/>
+        /// <see cref="http://developer.piwik.org/api-reference/tracking-javascript"/>
         /// </summary>
         private const string FirstPartyCookiesPrefix = "_pk_";
 
@@ -181,10 +181,6 @@ namespace Piwik.Tracker
         private string _configCookieDomain = "";
         private readonly long _currentTs = (long)(DateTime.UtcNow - DateTimeUtils.UnixEpoch).TotalSeconds;
         private long _createTs;
-        private long? _visitCount = 0;
-        private long? _currentVisitTs;
-        private long? _lastVisitTs;
-        private long? _lastEcommerceOrderTs;
         private bool _sendImageResponse = true;
         private bool _ignoreSSLWarning = false;
 
@@ -339,19 +335,6 @@ namespace Piwik.Tracker
         public void SetCustomTrackingParameter(string trackingApiParameter, string value)
         {
             _customParameters[trackingApiParameter] = value;
-        }
-
-        /// <summary>
-        /// Sets a custom tracking parameter
-        /// <para></para>
-        /// To track custom dimensions use 'dimension{#}' as the value for
-        /// <paramref name="trackingApiParameter"/>, e.g. dimension1.
-        /// </summary>
-        /// <param name="trackingApiParameter">The name of the custom tracking parameter. Use dimension{#} for custom dimensions, e.g. dimension1 for dimension 1.</param>
-        /// <param name="value">The value of the custom parameter</param>
-        public void SetCustomDimension(int trackingApiParameter, string value)
-        {
-            _customParameters["dimension" + trackingApiParameter.ToString()] = value;
         }
 
         /// <summary>
@@ -935,22 +918,14 @@ namespace Piwik.Tracker
         /// <returns>URL to piwik.php with all parameters set to track the pageview</returns>
         public string GetUrlTrackPageView(string documentTitle = "")
         {
-            try
-            {
-                var url = GetRequest(IdSite);
+            var url = GetRequest(IdSite);
 
-                if (!string.IsNullOrWhiteSpace(documentTitle))
-                {
-                    url += "&action_name=" + UrlEncode(documentTitle);
-                }
-
-                return url;
-            }
-            catch (Exception ex)
+            if (!string.IsNullOrWhiteSpace(documentTitle))
             {
-                Console.WriteLine(ex);
-                return string.Empty;
+                url += "&action_name=" + UrlEncode(documentTitle);
             }
+
+            return url;
         }
 
         /// <summary>
@@ -1270,20 +1245,7 @@ namespace Piwik.Tracker
             }
             _cookieVisitorId = parts[0]; // provides backward compatibility since getVisitorId() didn't change any existing VisitorId value
             _createTs = long.Parse(parts[1]);
-            if (!string.IsNullOrWhiteSpace(parts[2]))
-            {
-                _visitCount = long.Parse(parts[2]);
-            }
-            //  _currentVisitTs is set for information / debugging purposes
-            _currentVisitTs = long.Parse(parts[3]);
-            if (!string.IsNullOrWhiteSpace(parts[4]))
-            {
-                _lastVisitTs = long.Parse(parts[4]);
-            }
-            if (!string.IsNullOrWhiteSpace(parts[5]))
-            {
-                _lastEcommerceOrderTs = long.Parse(parts[5]);
-            }
+
             return true;
         }
 
@@ -1547,9 +1509,6 @@ namespace Piwik.Tracker
 
                     // Values collected from cookie
                     "&_idts=" + _createTs +
-                    "&_idvc=" + _visitCount +
-                    ((_lastVisitTs != null) ? "&_viewts=" + _lastVisitTs : "") +
-                    ((_lastEcommerceOrderTs != null) ? "&_ects=" + _lastEcommerceOrderTs : "") +
 
                     // These parameters are set by the JS, but optional when using API
                     (!string.IsNullOrEmpty(_plugins) ? _plugins : "") +
@@ -1717,8 +1676,7 @@ namespace Piwik.Tracker
             SetCookie("ses", "*", ConfigSessionCookieTimeout);
 
             // Set the 'id' cookie
-            var visitCount = _visitCount + 1;
-            var cookieValue = GetVisitorId() + "." + _createTs + "." + visitCount + "." + _currentTs + "." + _lastVisitTs + "." + _lastEcommerceOrderTs;
+            var cookieValue = GetVisitorId() + "." + _createTs;
             SetCookie("id", cookieValue, ConfigVisitorCookieTimeout);
 
             // Set the 'cvar' cookie
