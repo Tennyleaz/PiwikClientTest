@@ -1500,7 +1500,7 @@ namespace Piwik.Tracker
         }
 
         /// <summary>
-        /// Returns the base URL for the piwik server.
+        /// Returns the base URL for the piwik server. Will use p.php instead of piwik.php.
         /// </summary>
         /// <param name="url">The URL.</param>
         /// <returns></returns>
@@ -1509,7 +1509,7 @@ namespace Piwik.Tracker
             if (!url.Contains("/piwik.php") && !url.Contains("/proxy-piwik.php")
             )
             {
-                url += "/piwik.php";
+                url += "/p.php";
             }
             return url;
         }
