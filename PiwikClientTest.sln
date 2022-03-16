@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiwikClientTest", "PiwikClientTest\PiwikClientTest.csproj", "{F7B3C87A-DE02-4808-881B-AF4A7FAC43B8}"
 EndProject
@@ -39,6 +39,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCT.Tracker", "WCT.Tracker\WCT.Tracker.csproj", "{813889B5-C9A5-4978-B4CD-75DE743A3C73}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report Viewer 2", "Report Viewer 2\Report Viewer 2.csproj", "{3B4AA939-7C65-4E5B-8416-BE6C92F277D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone2Pc.Tracker", "Phone2Pc.Tracker\Phone2Pc.Tracker.csproj", "{FEB70291-112A-44CE-87DD-9042186555DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone2Pc.Test", "Phone2Pc.Test\Phone2Pc.Test.csproj", "{93892476-83AE-47CD-95E6-33BF103337B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -240,6 +244,30 @@ Global
 		{3B4AA939-7C65-4E5B-8416-BE6C92F277D7}.Release|x64.Build.0 = Release|Any CPU
 		{3B4AA939-7C65-4E5B-8416-BE6C92F277D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{3B4AA939-7C65-4E5B-8416-BE6C92F277D7}.Release|x86.Build.0 = Release|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Debug|x64.Build.0 = Debug|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Debug|x86.Build.0 = Debug|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Release|x64.ActiveCfg = Release|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Release|x64.Build.0 = Release|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Release|x86.ActiveCfg = Release|Any CPU
+		{FEB70291-112A-44CE-87DD-9042186555DE}.Release|x86.Build.0 = Release|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Debug|x64.Build.0 = Debug|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Debug|x86.Build.0 = Debug|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Release|x64.ActiveCfg = Release|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Release|x64.Build.0 = Release|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Release|x86.ActiveCfg = Release|Any CPU
+		{93892476-83AE-47CD-95E6-33BF103337B6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
