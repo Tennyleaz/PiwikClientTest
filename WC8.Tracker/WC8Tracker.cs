@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Windows;
 using Piwik.Tracker;
 
@@ -220,8 +221,8 @@ namespace WC8.Tracker
                 _appLocale = ci.Name;
             }
 
-            _width = customWidth.HasValue ? customWidth.Value : (int)SystemParameters.PrimaryScreenWidth;
-            _height = customHeight.HasValue ? customHeight.Value : (int)SystemParameters.PrimaryScreenHeight;
+            _width = customWidth.HasValue ? customWidth.Value : GetSystemMetrics(SystemMetric.SM_CXSCREEN);
+            _height = customHeight.HasValue ? customHeight.Value : GetSystemMetrics(SystemMetric.SM_CYSCREEN);
 
             _appName = appName;
             _version = version;
@@ -611,5 +612,26 @@ namespace WC8.Tracker
 
             return result;
         }
+
+        #region DLL import
+
+        [DllImport("user32.dll")]
+        internal static extern int GetSystemMetrics(SystemMetric smIndex);
+
+        internal enum SystemMetric : int
+        {
+            /// <summary>
+            /// The width of the screen of the primary display monitor, in pixels. This is the same value obtained by calling 
+            /// GetDeviceCaps as follows: GetDeviceCaps( hdcPrimaryMonitor, HORZRES).
+            /// </summary>
+            SM_CXSCREEN = 0,
+
+            /// <summary>
+            /// The height of the screen of the primary display monitor, in pixels. This is the same value obtained by calling 
+            /// GetDeviceCaps as follows: GetDeviceCaps( hdcPrimaryMonitor, VERTRES).
+            /// </summary>
+            SM_CYSCREEN = 1
+        }
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Windows;
 using Piwik.Tracker;
 
@@ -38,7 +39,8 @@ namespace WCT.Tracker
         Download,
         SendSecretary,
         ReDownload,
-        RegisterTrial
+        RegisterTrial,
+        PcsView
     }
 
     public enum WCT_Import_OP
@@ -74,13 +76,22 @@ namespace WCT.Tracker
         VcardExport,
         JpegExport,
         TxtExport,
-        MsExchangeExport
+        MsExchangeExport,
+        QContactzExport
     }
 
     public enum WCT_SYNC_OP
     {
         OutlookSync,
         NasSync
+    }
+
+    public enum WCT_PCS
+    {
+        SendSingle,
+        SendBatch,
+        Feedback,
+        TransferQuota
     }
 
     public enum ADD_CARD_SOURCE
@@ -226,8 +237,8 @@ namespace WCT.Tracker
                 _appLocale = ci.Name;
             }
 
-            _width = customWidth.HasValue ? customWidth.Value : (int)SystemParameters.PrimaryScreenWidth;
-            _height = customHeight.HasValue ? customHeight.Value : (int)SystemParameters.PrimaryScreenHeight;
+            _width = customWidth ?? GetSystemMetrics(SystemMetric.SM_CXSCREEN);
+            _height = customHeight ?? GetSystemMetrics(SystemMetric.SM_CYSCREEN);
 
             _appName = appName;
             _version = version;
@@ -293,6 +304,23 @@ namespace WCT.Tracker
             if (_excptionType != TrackerExcptionType.ArgumentExcption)
             {
                 string url = "http://" + _appName + "/Windows/" + _version + "/Sync/" + recordType.ToString();
+                result = DoTrackPage(url, _title);
+            }
+            else
+            {
+                // argument exception, don't do anything
+                result.StatusCode = 0;
+                result.Message = _excptionMessage;
+            }
+            return result;
+        }
+
+        public TrackerResult SendOperation(WCT_PCS recordType)
+        {
+            TrackerResult result = new TrackerResult();
+            if (_excptionType != TrackerExcptionType.ArgumentExcption)
+            {
+                string url = "http://" + _appName + "/Windows/" + _version + "/PCS/" + recordType.ToString();
                 result = DoTrackPage(url, _title);
             }
             else
@@ -617,5 +645,26 @@ namespace WCT.Tracker
 
             return result;
         }
+
+        #region DLL import
+
+        [DllImport("user32.dll")]
+        internal static extern int GetSystemMetrics(SystemMetric smIndex);
+
+        internal enum SystemMetric : int
+        {
+            /// <summary>
+            /// The width of the screen of the primary display monitor, in pixels. This is the same value obtained by calling 
+            /// GetDeviceCaps as follows: GetDeviceCaps( hdcPrimaryMonitor, HORZRES).
+            /// </summary>
+            SM_CXSCREEN = 0,
+
+            /// <summary>
+            /// The height of the screen of the primary display monitor, in pixels. This is the same value obtained by calling 
+            /// GetDeviceCaps as follows: GetDeviceCaps( hdcPrimaryMonitor, VERTRES).
+            /// </summary>
+            SM_CYSCREEN = 1
+        }
+        #endregion
     }
 }
