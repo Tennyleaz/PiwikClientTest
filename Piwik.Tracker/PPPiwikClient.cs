@@ -23,8 +23,6 @@ namespace Piwik.Tracker
         private string applicationName;
         private string versionNumber;
         private string responseString;
-        private int dimentionName;
-        private string dimentionValue;
         private System.Net.HttpStatusCode responseStatusCode;
         //private string localeName;
         //private string searchKey;
@@ -379,8 +377,6 @@ namespace Piwik.Tracker
             string url = GenerateTrackingURL(recordType);
             PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl, true);
             piwikTracker.SetUrl(url);
-            if (dimentionName > 0 && !string.IsNullOrWhiteSpace(dimentionValue))
-                piwikTracker.SetCustomDimension(dimentionName, dimentionValue);
             //piwikTracker.SetUrlReferrer(referrerURL);
             referrerURL = url;
             GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey, serchResults);
@@ -412,8 +408,6 @@ namespace Piwik.Tracker
             string url = "http://" + applicationName + "/" + versionNumber + "/" + strFreeInput;
             PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl, true);
             piwikTracker.SetUrl(url);
-            if (dimentionName > 0 && !string.IsNullOrWhiteSpace(dimentionValue))
-                piwikTracker.SetCustomDimension(dimentionName, dimentionValue);
             //piwikTracker.SetUrlReferrer(referrerURL);
             referrerURL = url;
             GenerateAdditionalProperties(ref piwikTracker, appLanguage, searchKey);
@@ -446,8 +440,6 @@ namespace Piwik.Tracker
             string url = GenerateTrackingURL(RecordType.CustomEvent);
             PiwikTracker piwikTracker = new PiwikTracker(SiteId, PiwikBaseUrl, true);
             piwikTracker.SetUrl(url);
-            if (dimentionName > 0 && !string.IsNullOrWhiteSpace(dimentionValue))
-                piwikTracker.SetCustomDimension(dimentionName, dimentionValue);
             //piwikTracker.SetUrlReferrer(referrerURL);
             referrerURL = url;
             GenerateAdditionalProperties(ref piwikTracker, null);            
@@ -466,12 +458,6 @@ namespace Piwik.Tracker
         public void SetUA(string strUA)
         {
             UA = strUA;
-        }
-
-        public void SetDimention(int index, string value)
-        {
-            dimentionName = index;
-            dimentionValue = value;
         }
 
         public void ClearUrlReferrer()

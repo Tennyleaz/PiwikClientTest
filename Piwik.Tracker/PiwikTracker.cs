@@ -143,6 +143,7 @@ namespace Piwik.Tracker
 
         private string _debugAppendUrl;
         private string _userAgent;
+        private string _clientHint;
         private DateTimeOffset _localTime = DateTimeOffset.MinValue;
         private bool _hasCookies;
         private string _plugins;
@@ -451,6 +452,15 @@ namespace Piwik.Tracker
         public void SetUserAgent(string userAgent)
         {
             _userAgent = userAgent;
+        }
+
+        /// <summary>
+        /// Set client hint string for Windows 11.
+        /// </summary>
+        /// <param name="clientHint"></param>
+        public void SetClientHints(string clientHint)
+        {
+            _clientHint = clientHint;
         }
 
         /// <summary>
@@ -1441,6 +1451,9 @@ namespace Piwik.Tracker
             request.Method = method;
             request.UserAgent = _userAgent;
             request.Headers.Add("Accept-Language", _acceptLanguage);
+            request.Headers.Add("Sec-CH-UA-Platform", "Windows");
+            if (!string.IsNullOrEmpty(_clientHint))
+                request.Headers.Add("Sec-CH-UA-Platform-Version", _clientHint);
             request.Timeout = (int)RequestTimeout.TotalMilliseconds;
             if (Proxy != null)
             {

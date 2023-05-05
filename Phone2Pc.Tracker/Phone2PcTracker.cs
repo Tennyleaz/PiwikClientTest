@@ -22,6 +22,7 @@ namespace Phone2Pc.Tracker
         //private BackgroundWorker sendWorker;
 
         private readonly string _userAgent;  // = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
+        private readonly string _clientHint;
         private readonly string _userID;
         private string _title;
         private readonly string _appName;
@@ -95,7 +96,19 @@ namespace Phone2Pc.Tracker
             // os version
             int osMajor = Environment.OSVersion.Version.Major;
             int osMinor = Environment.OSVersion.Version.Minor;
-            _userAgent = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + "; WOW64)";
+            string architecture = Environment.Is64BitOperatingSystem ? "; x64" : "; x86";
+
+            if (osMajor >= 10)
+            {
+                Version wrongVersion = new Version(10, 0, 22000, 0);
+                if (Environment.OSVersion.Version >= wrongVersion)
+                {
+                    // set client hint to 13.0.0 up
+                    _clientHint = "13.0.0";
+                }
+            }
+
+            _userAgent = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + architecture + ")";
 
             // locale of user environment            
             if (!string.IsNullOrEmpty(appLocale))
@@ -265,6 +278,8 @@ namespace Phone2Pc.Tracker
         {
             if (!string.IsNullOrEmpty(_userAgent))
                 piwikTracker.SetUserAgent(_userAgent);
+            if (!string.IsNullOrEmpty(_clientHint))
+                piwikTracker.SetClientHints(_clientHint);
             if (!string.IsNullOrEmpty(_appLocale))
                 piwikTracker.SetBrowserLanguage(_appLocale);
             if (!string.IsNullOrEmpty(_userID))

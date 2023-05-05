@@ -11,9 +11,11 @@ namespace WC8.Tester
     {
         static void Main(string[] args)
         {
+            string testServer = "http://10.10.15.65";
+            string realServer = "https://matomo.penpower.net";
             WCRetailTracker tracker = new WCRetailTracker(
-                "http://10.10.15.65",
-                "v8.6.1",
+                testServer,
+                "v8.8.2",
                 "Tennytest 2",
                 null,
                 5

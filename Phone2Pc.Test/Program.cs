@@ -7,9 +7,9 @@ namespace Phone2Pc.Test
     {
         static void Main(string[] args)
         {
-            string testServerURL = "https://10.10.15.65";
+            string testServerURL = "http://10.10.15.65";
             string realServerURL = "http://matomo.penpower.net";  // 正式站台使用的追蹤網址，僅能透過API溝通不能瀏覽
-            int testSiteId = 11;   // 測試站台的專案號碼，Phone2PC必須是8
+            int testSiteId = 8;   // 測試站台的專案號碼，Phone2PC必須是8
             int realSiteId = 10;  // 正式站台的專案號碼，Phone2PC必須是10
             string appVersion = "v1.1.0";
             string userId = "Tenny";  // 獨立的使用者ID，每一台電腦可以分辨
