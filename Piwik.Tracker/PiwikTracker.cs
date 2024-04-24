@@ -201,6 +201,12 @@ namespace Piwik.Tracker
             {
                 throw new ArgumentException("Piwik api url must not be emty or null.", nameof(apiUrl));
             }
+
+
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
             PiwikBaseUrl = FixPiwikBaseUrl(apiUrl);
             IdSite = idSite;
 
