@@ -77,7 +77,8 @@ namespace WCT.Tracker
         JpegExport,
         TxtExport,
         MsExchangeExport,
-        QContactzExport
+        QContactzExport,
+        GoogleContactExport
     }
 
     public enum WCT_SYNC_OP
