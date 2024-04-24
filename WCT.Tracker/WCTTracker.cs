@@ -152,18 +152,19 @@ namespace WCT.Tracker
         private static readonly int TIMEOUT_SECOUND = 30;
         private static string referrerURL = null;
 
-        private string _userAgent;  // = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
-        private string _userID;
-        private string _title;
-        private string _appName;
-        private string _appLocale;
-        private string _version;
-        private int _width, _height;
+        private readonly string _userAgent;  // = "Mozilla/5.0 (Windows NT 10.0; WOW64; en-US;)"; //"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0)";
+        private readonly string _clientHint;
+        private readonly string _userID;
+        private readonly string _title;
+        private readonly string _appName;
+        private readonly string _appLocale;
+        private readonly string _version;
+        private readonly int _width, _height;
         private int _dimentionIndex;
         private string _dimentionValue;
-        private bool _ignoreSSLWarning;
-        private TrackerExcptionType _excptionType;  // 用來儲存 constructor 裡面發生的問題
-        private string _excptionMessage;
+        private readonly bool _ignoreSSLWarning;
+        private readonly TrackerExcptionType _excptionType;  // 用來儲存 constructor 裡面發生的問題
+        private readonly string _excptionMessage;
 
         private static readonly TrackerResult ArgumentExcptionResult = new TrackerResult()
         {
@@ -227,6 +228,17 @@ namespace WCT.Tracker
             int osMajor = Environment.OSVersion.Version.Major;
             int osMinor = Environment.OSVersion.Version.Minor;
             string architecture = Environment.Is64BitOperatingSystem ? "; x64" : "; x86";
+
+            if (osMajor >= 10)
+            {
+                Version wrongVersion = new Version(10, 0, 22000, 0);
+                if (Environment.OSVersion.Version >= wrongVersion)
+                {
+                    // set client hint to 13.0.0 up
+                    _clientHint = "13.0.0";
+                }
+            }
+
             _userAgent = "Mozilla/5.0 (Windows NT " + osMajor + "." + osMinor + architecture + ")";
 
             // locale of user environment            
@@ -601,6 +613,8 @@ namespace WCT.Tracker
         {
             if (!string.IsNullOrEmpty(_userAgent))
                 piwikTracker.SetUserAgent(_userAgent);
+            if (!string.IsNullOrEmpty(_clientHint))
+                piwikTracker.SetClientHints(_clientHint);
             if (!string.IsNullOrEmpty(_appLocale))
                 piwikTracker.SetBrowserLanguage(_appLocale);
             if (!string.IsNullOrEmpty(_userID))

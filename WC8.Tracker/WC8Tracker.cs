@@ -581,6 +581,8 @@ namespace WC8.Tracker
         {
             if (!string.IsNullOrEmpty(_userAgent))
                 piwikTracker.SetUserAgent(_userAgent);
+            if (!string.IsNullOrEmpty(_clientHint))
+                piwikTracker.SetClientHints(_clientHint);
             if (!string.IsNullOrEmpty(_appLocale))
                 piwikTracker.SetBrowserLanguage(_appLocale);
             if (!string.IsNullOrEmpty(_userID))
