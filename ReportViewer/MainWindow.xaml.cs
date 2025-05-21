@@ -90,7 +90,7 @@ namespace ReportViewer
                     if (cbReportDuration.SelectedIndex == 4) // 自訂日期
                         startDate = rangeStartDatePicker.SelectedDate.Value;
                     RegisterVerifyWindow r = new RegisterVerifyWindow(
-                        "10.10.15.62", 3306, "db", "user", "passwd",
+                        "10.10.15.62", 3306, "matomodb", "matomouser", "penpower",
                         duration, date, startDate);
                     r.Owner = this;
                     r.ShowDialog();

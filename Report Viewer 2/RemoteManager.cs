@@ -20,7 +20,7 @@ namespace Report_Viewer_2
         {
             try
             {
-                _sshClient = new SshClient(host, "", new PrivateKeyFile("key.txt", ""));
+                _sshClient = new SshClient(host, "webmaster", new PrivateKeyFile("key.txt", "penpower"));
                 _sshClient.Connect();
                 if (_sshClient.IsConnected)
                     return true;

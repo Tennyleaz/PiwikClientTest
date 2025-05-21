@@ -2,6 +2,6 @@ namespace ReportViewer
 { 
     public static class Build 
     { 
-        public static string Timestamp = "2019-10-04 10:51";
+        public static string Timestamp = "2024-07-30 10:19";
     }
 }

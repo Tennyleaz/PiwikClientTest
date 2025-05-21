@@ -127,22 +127,32 @@ namespace Report_Viewer_2.Pages
             ReportDuration duration = dateSelector.Duration;
             DateTime date = dateSelector.datePicker.SelectedDate.Value;
 
-            if (duration == ReportDuration.range)  // 自訂日期
+            try
             {
-                if (!dateSelector.rangeStartDatePicker.SelectedDate.HasValue || dateSelector.rangeStartDatePicker.SelectedDate.Value >= date)
+                if (duration == ReportDuration.range)  // 自訂日期
                 {
-                    ModernDialog.ShowMessage("Start date must earlier than end date.", "警告", MessageBoxButton.OK);
-                    return;
+                    if (!dateSelector.rangeStartDatePicker.SelectedDate.HasValue || dateSelector.rangeStartDatePicker.SelectedDate.Value >= date)
+                    {
+                        ModernDialog.ShowMessage("Start date must earlier than end date.", "警告", MessageBoxButton.OK);
+                        return;
+                    }
+                    UserVisitWindow uw = new UserVisitWindow(projectID, platform, duration, favoriteLimit, userDefindedFavorite.ToList(), date, dateSelector.rangeStartDatePicker.SelectedDate.Value);
+                    uw.Owner = System.Windows.Window.GetWindow(this);
+                    uw.ShowDialog();
                 }
-                UserVisitWindow uw = new UserVisitWindow(projectID, platform, duration, favoriteLimit, userDefindedFavorite.ToList(), date, dateSelector.rangeStartDatePicker.SelectedDate.Value);
-                uw.Owner = System.Windows.Window.GetWindow(this);
-                uw.ShowDialog();
+                else
+                {
+                    UserVisitWindow uw = new UserVisitWindow(projectID, platform, duration, favoriteLimit, userDefindedFavorite.ToList(), date);
+                    uw.Owner = System.Windows.Window.GetWindow(this);
+                    uw.ShowDialog();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                UserVisitWindow uw = new UserVisitWindow(projectID, platform, duration, favoriteLimit, userDefindedFavorite.ToList(), date);
-                uw.Owner = System.Windows.Window.GetWindow(this);
-                uw.ShowDialog();
+                if (ex.InnerException != null)
+                    MessageBox.Show(ex.InnerException.ToString());
+                else
+                    MessageBox.Show(ex.ToString());
             }
         }
 

@@ -34,7 +34,7 @@ namespace Report_Viewer_2.Window
         private const string PiwikServerUrl = @"http://10.10.15.62/index.php?";
         private const string Token = "4791a3edddeb2f8e2161b7f51da27ed4";
 
-        private const int TIMEOUT_MS = 5000;
+        private const int TIMEOUT_MS = 30000;
         private const string NO_OP = "無有效操作";
         private const string NO_REGION = "無有效地區";
         private const string MIX = "Mix";
