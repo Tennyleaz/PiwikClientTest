@@ -541,12 +541,12 @@ namespace PiwikClientTest
             PPPiwikClient pc = new PPPiwikClient(SiteId, PiwikBaseUrl, cbAppName.SelectedValue.ToString(), versionNumber, uID, width, height);
             pc.SendRecordCompleted += MySendCompleted;
             pc.SetUA(UA);
-            if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
-            {
-                int dimentionIndex = 1;
-                int.TryParse(tbDimentionName.Text, out dimentionIndex);
-                pc.SetDimention(dimentionIndex, tbDimentionValue.Text);
-            }
+            //if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
+            //{
+            //    int dimentionIndex = 1;
+            //    int.TryParse(tbDimentionName.Text, out dimentionIndex);
+            //    pc.SetDimention(dimentionIndex, tbDimentionValue.Text);
+            //}
             if (!pc.SendEvent(tbEventCategory.Text, tbEventAction.Text, tbEventName.Text, tbEventValue.Text))
                 MessageBox.Show(this, "busy...");
         }
@@ -1298,12 +1298,12 @@ namespace PiwikClientTest
             
             piwikTracker.SetUrl(url);
             piwikTracker.SetResolution(width, height);
-            if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
-            {
-                int dimentionIndex = 1;
-                int.TryParse(tbDimentionName.Text, out dimentionIndex);
-                piwikTracker.SetCustomDimension(dimentionIndex, tbDimentionValue.Text);
-            }
+            //if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
+            //{
+            //    int dimentionIndex = 1;
+            //    int.TryParse(tbDimentionName.Text, out dimentionIndex);
+            //    piwikTracker.SetCustomDimension(dimentionIndex, tbDimentionValue.Text);
+            //}
             TrackingResponse response = piwikTracker.DoTrackContentImpression(tbContentName.Text, tbContentPiece.Text, tbContentTarget.Text);
             ShowResponse(response);
         }
@@ -1349,12 +1349,12 @@ namespace PiwikClientTest
                 piwikTracker.SetUserId(uID);
             piwikTracker.SetUrl(tbEcommercePage.Text);
             piwikTracker.SetResolution(width, height);
-            if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
-            {
-                int dimentionIndex = 1;
-                int.TryParse(tbDimentionName.Text, out dimentionIndex);
-                piwikTracker.SetCustomDimension(dimentionIndex, tbDimentionValue.Text);
-            }
+            //if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
+            //{
+            //    int dimentionIndex = 1;
+            //    int.TryParse(tbDimentionName.Text, out dimentionIndex);
+            //    piwikTracker.SetCustomDimension(dimentionIndex, tbDimentionValue.Text);
+            //}
             piwikTracker.SetEcommerceView(tbSKU2.Text, tbProductName2.Text, null, price);
             TrackingResponse response = piwikTracker.DoTrackPageView(tbTitle.Text);
             /// Only the parameters $orderId and $grandTotal are required.
@@ -1411,12 +1411,12 @@ namespace PiwikClientTest
                 piwikTracker.SetUserId(uID);
             piwikTracker.SetUrl(url);
             piwikTracker.SetResolution(width, height);
-            if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
-            {
-                int dimentionIndex = 1;
-                int.TryParse(tbDimentionName.Text, out dimentionIndex);                
-                piwikTracker.SetCustomDimension(dimentionIndex, tbDimentionValue.Text);
-            }
+            //if (!string.IsNullOrEmpty(tbDimentionValue.Text) && !string.IsNullOrEmpty(tbDimentionName.Text))
+            //{
+            //    int dimentionIndex = 1;
+            //    int.TryParse(tbDimentionName.Text, out dimentionIndex);                
+            //    piwikTracker.SetCustomDimension(dimentionIndex, tbDimentionValue.Text);
+            //}
             tbFreeInput.Text = string.Empty;
             TrackingResponse response = piwikTracker.DoTrackPageView(tbTitle.Text);
             ShowResponse(response);            
